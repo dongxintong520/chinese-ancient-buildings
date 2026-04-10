@@ -1,0 +1,159 @@
+{
+    "asset": {
+        "generator": "https://3dviewer.net",
+        "version": "2.0"
+    },
+    "scene": 0,
+    "scenes": [
+        {
+            "nodes": [
+                0
+            ]
+        }
+    ],
+    "nodes": [
+        {
+            "mesh": 0
+        }
+    ],
+    "materials": [
+        {
+            "name": "Solid",
+            "pbrMetallicRoughness": {
+                "baseColorFactor": [
+                    1,
+                    1,
+                    1,
+                    1
+                ]
+            },
+            "emissiveFactor": [
+                0,
+                0,
+                0
+            ],
+            "doubleSided": true,
+            "alphaMode": "OPAQUE"
+        },
+        {
+            "name": "KongFamilyMansionOfQufu-from-images",
+            "pbrMetallicRoughness": {
+                "baseColorFactor": [
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                "baseColorTexture": {
+                    "index": 0
+                }
+            },
+            "emissiveFactor": [
+                0,
+                0,
+                0
+            ],
+            "doubleSided": true,
+            "alphaMode": "OPAQUE"
+        }
+    ],
+    "meshes": [
+        {
+            "name": "Mesh",
+            "primitives": [
+                {
+                    "attributes": {
+                        "POSITION": 1,
+                        "NORMAL": 2,
+                        "TEXCOORD_0": 3
+                    },
+                    "mode": 4,
+                    "material": 1,
+                    "indices": 0
+                }
+            ]
+        }
+    ],
+    "buffers": [
+        {
+            "uri": "kongzifu.bin",
+            "byteLength": 3547480
+        }
+    ],
+    "bufferViews": [
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 1117848,
+            "target": 34963
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 1117848,
+            "byteLength": 911112,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 2028960,
+            "byteLength": 911112,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 2940072,
+            "byteLength": 607408,
+            "target": 34962
+        }
+    ],
+    "accessors": [
+        {
+            "bufferView": 0,
+            "byteOffset": 0,
+            "componentType": 5125,
+            "count": 279462,
+            "type": "SCALAR"
+        },
+        {
+            "bufferView": 1,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 75926,
+            "min": [
+                -9.122734,
+                -3.146013,
+                -17.383547
+            ],
+            "max": [
+                15.179567,
+                -0.599112,
+                16.304239
+            ],
+            "type": "VEC3"
+        },
+        {
+            "bufferView": 2,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 75926,
+            "type": "VEC3"
+        },
+        {
+            "bufferView": 3,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 75926,
+            "type": "VEC2"
+        }
+    ],
+    "images": [
+        {
+            "uri": "Kong_Family_Mansion_Of_Qufu_from_images_8e245a9b8d.jpg"
+        }
+    ],
+    "textures": [
+        {
+            "source": 0
+        }
+    ]
+}

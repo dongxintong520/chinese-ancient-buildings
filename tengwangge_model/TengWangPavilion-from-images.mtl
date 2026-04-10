@@ -1,0 +1,18 @@
+newmtl Solid
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.0 0.0 0.0
+d 1.0
+Ns 0.0
+illum 0
+
+newmtl TengWangPavilion-from-images
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.0 0.0 0.0
+d 1.0
+Ns 0.0
+illum 0
+map_Kd Teng_Wang_Pavilion_from_images_c12e69a183.jpg
+map_Bump Teng_Wang_Pavilion_from_images_normal_12edcb0a5b.jpg
+

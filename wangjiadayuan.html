@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>王家大院 · 3D数字复原 | 中国古代工程奇迹</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Microsoft YaHei', 'Noto Serif SC', serif;
+        }
+        #info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            color: white;
+            background: rgba(0,0,0,0.7);
+            padding: 12px 24px;
+            border-radius: 30px;
+            backdrop-filter: blur(8px);
+            pointer-events: none;
+            font-size: 14px;
+            z-index: 200;
+        }
+        .back-btn {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            z-index: 200;
+            background: linear-gradient(135deg, #5a7a6a, #3a5a4a);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            z-index: 201;
+        }
+        .back-btn:hover {
+            transform: scale(1.03);
+            background: #6a9a7a;
+        }
+        .controls-hint {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            z-index: 200;
+            color: rgba(255,255,255,0.8);
+            background: rgba(0,0,0,0.5);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            pointer-events: none;
+        }
+        .sidebar {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 280px;
+            background: rgba(30, 35, 30, 0.92);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 16px;
+            z-index: 150;
+            border-left: 3px solid #6aaa7a;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            pointer-events: auto;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .sidebar h3 {
+            color: #8acc9a;
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-align: center;
+            letter-spacing: 2px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #6aaa7a;
+        }
+        .sidebar-item {
+            background: rgba(50, 65, 55, 0.6);
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #e8e0d0;
+            font-size: 13px;
+            border-left: 2px solid #6aaa7a;
+        }
+        .sidebar-item:hover {
+            background: #5a8a6a;
+            transform: translateX(-3px);
+        }
+        .sidebar-item.active {
+            background: #4a7a5a;
+            border-left-color: #ffdd99;
+        }
+        .sidebar-item .title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #ffdd99;
+            font-size: 14px;
+        }
+        .sidebar-item .desc {
+            font-size: 11px;
+            color: #ccddcc;
+            line-height: 1.4;
+        }
+        .sidebar-close {
+            text-align: right;
+            font-size: 18px;
+            cursor: pointer;
+            color: #8acc9a;
+            margin-bottom: 5px;
+        }
+        .sidebar-close:hover { color: #ffaa66; }
+        
+        .popup-card {
+            position: fixed;
+            background: rgba(30, 35, 30, 0.96);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 16px 22px;
+            max-width: 320px;
+            border-left: 5px solid #6aaa7a;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #e8e0d0;
+            font-family: 'Microsoft YaHei', sans-serif;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            pointer-events: auto;
+            z-index: 1000;
+            animation: fadeInUp 0.2s ease-out;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .popup-card strong {
+            color: #8acc9a;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 15px;
+            letter-spacing: 1px;
+        }
+        .popup-card .detail-info {
+            font-size: 12px;
+            color: #aaccaa;
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(100,180,120,0.3);
+        }
+        .popup-card .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            color: #aaccaa;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            background: none;
+            border: none;
+        }
+        .popup-card .close-btn:hover { color: #ffaa66; }
+        
+        .loading-panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            color: #8acc9a;
+            padding: 30px 50px;
+            border-radius: 60px;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 300;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid #8acc9a;
+            pointer-events: none;
+            min-width: 300px;
+            transition: opacity 0.5s ease;
+        }
+        .loading-panel .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(100,180,120,0.3);
+            border-top: 4px solid #8acc9a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-panel .status-text {
+            font-size: 14px;
+            color: #aaccaa;
+            margin-top: 10px;
+        }
+        .error-msg {
+            position: absolute;
+            bottom: 120px;
+            left: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.85);
+            color: #ffaa66;
+            padding: 15px;
+            border-radius: 16px;
+            font-size: 13px;
+            text-align: center;
+            z-index: 300;
+            display: none;
+        }
+        .debug-info {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            color: #88ff88;
+            font-size: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            z-index: 200;
+            pointer-events: none;
+            max-width: 350px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            transition: opacity 0.5s ease;
+        }
+        @media (max-width: 768px) {
+            .sidebar { width: 260px; right: 10px; padding: 12px; max-height: 70vh; }
+            .sidebar-item { padding: 10px 12px; }
+            .debug-info { font-size: 8px; max-width: 250px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="info">🏛️ 王家大院 · 3D数字复原 | 点击右侧列表查看建筑说明</div>
+    <button class="back-btn" onclick="goBack()">← 返回地图首页</button>
+    <div class="controls-hint">🖱️ 鼠标拖拽旋转视角 | 右键平移 | 滚轮缩放</div>
+    
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-close" id="sidebarClose">✕</div>
+        <h3>🏯 建筑结构说明</h3>
+        <div id="sidebarList"></div>
+    </div>
+    
+    <div class="loading-panel" id="loadingPanel">
+        <div class="spinner"></div>
+        🏯 正在加载王家大院3D模型...<br>
+        <span id="loadStatus" class="status-text">初始化...</span>
+    </div>
+    <div class="error-msg" id="errorMsg">⚠️ 模型加载失败</div>
+    <div class="debug-info" id="debugInfo">等待加载...</div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+        function updateDebug(msg) {
+            const debugEl = document.getElementById('debugInfo');
+            const time = new Date().toLocaleTimeString();
+            if (debugEl) {
+                debugEl.innerHTML += '\n[' + time + '] ' + msg;
+                debugEl.scrollTop = debugEl.scrollHeight;
+            }
+            console.log(msg);
+        }
+        
+        function updateLoadStatus(msg) {
+            const statusEl = document.getElementById('loadStatus');
+            if (statusEl) statusEl.innerHTML = msg;
+            updateDebug(msg);
+        }
+        
+        function hideLoadingUI() {
+            const loadingPanel = document.getElementById('loadingPanel');
+            const debugInfo = document.getElementById('debugInfo');
+            
+            if (loadingPanel) {
+                loadingPanel.style.opacity = '0';
+                setTimeout(() => {
+                    loadingPanel.style.display = 'none';
+                }, 500);
+            }
+            
+            if (debugInfo) {
+                debugInfo.style.opacity = '0';
+                setTimeout(() => {
+                    debugInfo.style.display = 'none';
+                }, 500);
+            }
+        }
+        
+        updateDebug('=== 初始化开始 ===');
+        
+        // 场景
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x1a3a4a);
+        scene.fog = new THREE.FogExp2(0x1a3a4a, 0.008);
+        
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
+        camera.position.set(8, 6, 15);
+        camera.lookAt(0, 2, 0);
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        document.body.appendChild(renderer.domElement);
+        
+        const labelRenderer = new CSS2DRenderer();
+        labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        labelRenderer.domElement.style.position = 'absolute';
+        labelRenderer.domElement.style.top = '0px';
+        labelRenderer.domElement.style.left = '0px';
+        labelRenderer.domElement.style.pointerEvents = 'none';
+        document.body.appendChild(labelRenderer.domElement);
+        
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.target.set(0, 2, 0);
+        
+        updateDebug('Three.js 初始化完成');
+        
+        // 光照
+        const ambientLight = new THREE.AmbientLight(0x606080, 0.7);
+        scene.add(ambientLight);
+        
+        const mainLight = new THREE.DirectionalLight(0xfff5e8, 1.2);
+        mainLight.position.set(5, 10, 4);
+        mainLight.castShadow = true;
+        scene.add(mainLight);
+        
+        const fillLight = new THREE.PointLight(0xc87e4a, 0.5);
+        fillLight.position.set(-3, 4, 5);
+        scene.add(fillLight);
+        
+        const backLight = new THREE.PointLight(0x6688aa, 0.4);
+        backLight.position.set(0, 4, -6);
+        scene.add(backLight);
+        
+        // 辅助网格
+        const gridHelper = new THREE.GridHelper(30, 20, 0x88aacc, 0x6688aa);
+        gridHelper.position.y = -0.5;
+        gridHelper.material.transparent = true;
+        gridHelper.material.opacity = 0.4;
+        scene.add(gridHelper);
+        
+        updateDebug('光照完成');
+        
+        // 王家大院建筑说明数据
+        const buildingParts = [
+            { name: "🏛️ 王家大院全景", 
+              content: "<strong>🏛️ 王家大院</strong>位于山西灵石，素有'华夏民居第一宅'之称，总面积25万平方米，比故宫还大。",
+              detail: "📏 面积: 25万㎡ | 🏆 地位: 华夏民居第一宅 | 📍 位置: 山西灵石" },
+            { name: "🏯 高家崖建筑群", 
+              content: "<strong>🏯 高家崖建筑群</strong>由王汝聪、王汝成兄弟建于嘉庆年间，大小院落35座，房屋342间。",
+              detail: "🏠 院落: 35座 | 🪵 房屋: 342间 | 📅 年代: 清嘉庆" },
+            { name: "🏛️ 红门堡建筑群", 
+              content: "<strong>🏛️ 红门堡</strong>始建于乾隆年间，依山而建，呈'王'字形布局，是王家大院的精华部分。",
+              detail: "🏛️ 布局: '王'字形 | ⛰️ 特点: 依山而建 | 📅 年代: 清乾隆" },
+            { name: "🎨 三雕艺术", 
+              content: "<strong>🎨 砖雕、木雕、石雕</strong>王家大院以'三雕'闻名，题材丰富，工艺精湛，被誉为'民间紫禁城'。",
+              detail: "🪵 木雕: 人物/花鸟 | 🪨 石雕: 狮/柱础 | 🧱 砖雕: 吉祥图案" },
+            { name: "🏮 孝义祠", 
+              content: "<strong>🏮 孝义祠</strong>王家祠堂，供奉祖先牌位，体现晋商'以孝治家'的传统美德。",
+              detail: "🏛️ 功能: 祠堂祭祀 | 📜 文化: 孝道文化 | 🎯 地位: 家族精神象征" },
+            { name: "📜 王家历史", 
+              content: "<strong>📜 王家历史</strong>王家从农耕起家，后经商致富，成为晋商代表，历经明清两朝600余年。",
+              detail: "📅 历史: 600余年 | 💰 家世: 晋商代表 | 👑 鼎盛: 明清时期" },
+            { name: "🏯 崇宁堡", 
+              content: "<strong>🏯 崇宁堡</strong>王家大院最早的堡寨，地势最高，可俯瞰整个王家大院全景。",
+              detail: "🏔️ 地势: 最高处 | 👁️ 视野: 全景 | 📅 年代: 清早期" },
+            { name: "🎋 后花园", 
+              content: "<strong>🎋 后花园</strong>典型的北方园林风格，亭台楼阁，小桥流水，是王家大院休闲之所。",
+              detail: "🌳 风格: 北方园林 | 💧 景观: 小桥流水 | 🏛️ 建筑: 亭台楼阁" }
+        ];
+        
+        let modelScene = null;
+        let currentPopup = null;
+        
+        function buildSidebar() {
+            const container = document.getElementById('sidebarList');
+            container.innerHTML = '';
+            buildingParts.forEach((part, index) => {
+                const item = document.createElement('div');
+                item.className = 'sidebar-item';
+                item.innerHTML = `<div class="title">${part.name}</div><div class="desc">${part.detail.substring(0, 40)}...</div>`;
+                item.onclick = () => {
+                    if (currentPopup) document.body.removeChild(currentPopup);
+                    const popup = document.createElement('div');
+                    popup.className = 'popup-card';
+                    popup.innerHTML = `<button class="close-btn" onclick="this.parentElement.remove()">✕</button>${part.content}<div class="detail-info">📌 ${part.detail}</div>`;
+                    document.body.appendChild(popup);
+                    const sidebarRect = document.getElementById('sidebar').getBoundingClientRect();
+                    popup.style.left = `${sidebarRect.left - 330}px`;
+                    popup.style.top = `${sidebarRect.top + 50}px`;
+                    currentPopup = popup;
+                };
+                container.appendChild(item);
+            });
+            updateDebug('侧边栏构建完成');
+        }
+        
+        // ========== 加载王家大院模型 ==========
+        const loadingPanel = document.getElementById('loadingPanel');
+        const errorMsgDiv = document.getElementById('errorMsg');
+        let modelLoaded = false;
+        
+        // 请根据您的实际文件名修改这里
+        const modelFolder = 'wangjiadayuan_model/';
+        const objFile = 'WangFamilyCompound-from-images.obj';
+        const texturePath = modelFolder + 'Wang_Family_Compound_from_images_52c4cbe16e.jpg';
+        
+        updateDebug(`模型路径: ${modelFolder}${objFile}`);
+        updateDebug(`纹理路径: ${texturePath}`);
+        updateLoadStatus('加载纹理图片...');
+        
+        // 先加载纹理
+        const textureLoader = new THREE.TextureLoader();
+        textureLoader.load(texturePath,
+            (texture) => {
+                updateDebug('✅ 纹理图片加载成功');
+                updateLoadStatus('纹理加载完成，加载OBJ模型...');
+                
+                const material = new THREE.MeshStandardMaterial({
+                    map: texture,
+                    roughness: 0.5,
+                    metalness: 0.1,
+                    color: 0xffffff
+                });
+                
+                const objLoader = new OBJLoader();
+                objLoader.setPath(modelFolder);
+                
+                objLoader.load(objFile,
+                    (obj) => {
+                        updateDebug('✅ OBJ模型加载成功！');
+                        modelScene = obj;
+                        
+                        const box = new THREE.Box3().setFromObject(modelScene);
+                        const center = box.getCenter(new THREE.Vector3());
+                        const size = box.getSize(new THREE.Vector3());
+                        
+                        updateDebug(`模型尺寸: ${size.x.toFixed(2)} x ${size.y.toFixed(2)} x ${size.z.toFixed(2)}`);
+                        
+                        // 将模型中心移到原点
+                        modelScene.position.x = -center.x;
+                        modelScene.position.z = -center.z;
+                        modelScene.position.y = -center.y;
+                        
+                        // 根据大小调整缩放
+                        const maxSize = Math.max(size.x, size.y, size.z);
+                        const targetSize = 25.0;
+                        const scale = targetSize / maxSize;
+                        modelScene.scale.set(scale, scale, scale);
+                        
+                        // 调整位置
+                        modelScene.position.y = modelScene.position.y - 0.5;
+                        
+                        updateDebug(`缩放比例: ${scale.toFixed(3)}`);
+                        
+                        // 应用纹理材质
+                        let meshCount = 0;
+                        modelScene.traverse((child) => {
+                            if (child.isMesh) {
+                                meshCount++;
+                                child.material = material.clone();
+                                child.castShadow = true;
+                                child.receiveShadow = true;
+                            }
+                        });
+                        updateDebug(`应用纹理到 ${meshCount} 个网格`);
+                        
+                        scene.add(modelScene);
+                        modelLoaded = true;
+                        hideLoadingUI();
+                        buildSidebar();
+                        
+                        // 添加主标题
+                        const titleDiv = document.createElement('div');
+                        titleDiv.textContent = '🏛️ 王 家 大 院  🏛️';
+                        titleDiv.style.cssText = `color:#8acc9a;font-size:22px;font-weight:bold;background:linear-gradient(135deg,#4a6a5a,#2a4a3a);padding:8px 28px;border-radius:60px;border:2px solid #8acc9a;font-family:'KaiTi','Microsoft YaHei';backdrop-filter:blur(8px);white-space:nowrap;letter-spacing:4px`;
+                        const titleLabel = new CSS2DObject(titleDiv);
+                        titleLabel.position.set(0, size.y * scale * 0.6 + 1.0, 0);
+                        scene.add(titleLabel);
+                        
+                        // 添加副标题
+                        const subDiv = document.createElement('div');
+                        subDiv.textContent = '华夏民居第一宅 · 民间紫禁城';
+                        subDiv.style.cssText = `color:#aaccaa;font-size:12px;font-style:italic;background:rgba(0,0,0,0.5);padding:4px 16px;border-radius:30px;font-family:'KaiTi','Microsoft YaHei';backdrop-filter:blur(4px);white-space:nowrap`;
+                        const subLabel = new CSS2DObject(subDiv);
+                        subLabel.position.set(0, size.y * scale * 0.6 + 0.5, 0);
+                        scene.add(subLabel);
+                        
+                        updateDebug('🎉 王家大院模型加载完成！');
+                    },
+                    (xhr) => {
+                        const percent = Math.floor((xhr.loaded / xhr.total) * 100);
+                        const loadedMB = (xhr.loaded / 1024 / 1024).toFixed(1);
+                        const totalMB = (xhr.total / 1024 / 1024).toFixed(1);
+                        updateLoadStatus(`加载OBJ ${percent}% (${loadedMB}MB / ${totalMB}MB)`);
+                    },
+                    (error) => {
+                        updateDebug(`❌ OBJ加载失败: ${error}`);
+                        loadingPanel.style.display = 'none';
+                        errorMsgDiv.style.display = 'block';
+                        errorMsgDiv.innerHTML = `⚠️ OBJ加载失败<br>路径: ${modelFolder}${objFile}<br>请检查文件是否存在`;
+                        hideLoadingUI();
+                    }
+                );
+            },
+            (error) => {
+                updateDebug(`❌ 纹理加载失败: ${error}，使用默认材质`);
+                updateLoadStatus('纹理加载失败，使用默认材质...');
+                
+                const defaultMaterial = new THREE.MeshStandardMaterial({
+                    color: 0x8a9a7a,
+                    roughness: 0.6,
+                    metalness: 0.1
+                });
+                
+                const objLoader = new OBJLoader();
+                objLoader.setPath(modelFolder);
+                objLoader.load(objFile,
+                    (obj) => {
+                        updateDebug('✅ OBJ加载成功（默认材质模式）');
+                        modelScene = obj;
+                        
+                        const box = new THREE.Box3().setFromObject(modelScene);
+                        const center = box.getCenter(new THREE.Vector3());
+                        const size = box.getSize(new THREE.Vector3());
+                        
+                        modelScene.position.x = -center.x;
+                        modelScene.position.z = -center.z;
+                        modelScene.position.y = -center.y;
+                        
+                        const maxSize = Math.max(size.x, size.y, size.z);
+                        const scale = 8.0 / maxSize;
+                        modelScene.scale.set(scale, scale, scale);
+                        modelScene.position.y = modelScene.position.y - 0.5;
+                        
+                        modelScene.traverse((child) => {
+                            if (child.isMesh) {
+                                child.castShadow = true;
+                                child.material = defaultMaterial.clone();
+                            }
+                        });
+                        
+                        scene.add(modelScene);
+                        modelLoaded = true;
+                        hideLoadingUI();
+                        buildSidebar();
+                        
+                        const titleDiv = document.createElement('div');
+                        titleDiv.textContent = '🏛️ 王 家 大 院  🏛️';
+                        titleDiv.style.cssText = `color:#8acc9a;font-size:22px;font-weight:bold;background:linear-gradient(135deg,#4a6a5a,#2a4a3a);padding:8px 28px;border-radius:60px;border:2px solid #8acc9a;font-family:'KaiTi','Microsoft YaHei';backdrop-filter:blur(8px);white-space:nowrap;letter-spacing:4px`;
+                        const titleLabel = new CSS2DObject(titleDiv);
+                        titleLabel.position.set(0, size.y * scale * 0.6 + 1.0, 0);
+                        scene.add(titleLabel);
+                        
+                        updateDebug('🎉 模型加载完成（使用默认材质）');
+                    },
+                    null,
+                    (error) => {
+                        updateDebug(`❌ OBJ加载失败: ${error}`);
+                        loadingPanel.style.display = 'none';
+                        errorMsgDiv.style.display = 'block';
+                        hideLoadingUI();
+                    }
+                );
+            }
+        );
+        
+        // ========== 云层效果 ==========
+        const cloudGroup = new THREE.Group();
+        const cloudMatTrans = new THREE.MeshStandardMaterial({ color: 0xcceeff, transparent: true, opacity: 0.12 });
+        
+        for (let i = 0; i < 24; i++) {
+            const cloudPart = new THREE.Mesh(new THREE.SphereGeometry(0.7, 6, 6), cloudMatTrans);
+            const rad = (i / 24) * Math.PI * 2;
+            cloudPart.position.set(Math.cos(rad) * 12, 3.5 + Math.sin(rad * 2) * 0.5, Math.sin(rad) * 12);
+            cloudGroup.add(cloudPart);
+        }
+        scene.add(cloudGroup);
+        
+        const cloudGroup2 = new THREE.Group();
+        for (let i = 0; i < 20; i++) {
+            const cloudPart = new THREE.Mesh(new THREE.SphereGeometry(0.6, 6, 6), cloudMatTrans);
+            const rad = (i / 20) * Math.PI * 2;
+            cloudPart.position.set(Math.cos(rad) * 10, 5.0 + Math.sin(rad * 1.5) * 0.4, Math.sin(rad) * 10);
+            cloudGroup2.add(cloudPart);
+        }
+        scene.add(cloudGroup2);
+        
+        updateDebug('云层效果已添加');
+        
+        // 建筑周围光晕
+        const glowMat = new THREE.MeshStandardMaterial({ color: 0x8acc9a, emissive: 0x448866, transparent: true, opacity: 0.25 });
+        const glowSphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 12, 12), glowMat);
+        glowSphere.position.set(0, 3.5, 0);
+        scene.add(glowSphere);
+        
+        let animTime = 0;
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            animTime += 0.006;
+            
+            cloudGroup.rotation.y += 0.0008;
+            cloudGroup2.rotation.y -= 0.0006;
+            
+            if (glowSphere) {
+                const intensity = 0.25 + Math.sin(animTime * 2) * 0.1;
+                glowSphere.material.emissiveIntensity = intensity;
+            }
+            
+            controls.update();
+            renderer.render(scene, camera);
+            labelRenderer.render(scene, camera);
+        }
+        animate();
+        
+        // 侧边栏收起/展开
+        let sidebarVisible = true;
+        const sidebar = document.getElementById('sidebar');
+        const sidebarClose = document.getElementById('sidebarClose');
+        sidebarClose.onclick = () => {
+            if (sidebarVisible) {
+                sidebar.style.right = '-300px';
+                sidebarVisible = false;
+                sidebarClose.innerHTML = '☰';
+                sidebarClose.style.cssText = 'position:fixed;right:10px;top:50%;background:rgba(30,35,30,0.9);padding:8px 12px;border-radius:30px;font-size:20px;z-index:160;cursor:pointer';
+            } else {
+                sidebar.style.right = '20px';
+                sidebarVisible = true;
+                sidebarClose.innerHTML = '✕';
+                sidebarClose.style.cssText = '';
+            }
+        };
+        
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        window.goBack = () => window.location.href = 'index.html';
+        
+        setTimeout(() => {
+            if (!modelLoaded && loadingPanel.style.display !== 'none') {
+                updateDebug('⚠️ 加载超时');
+                loadingPanel.style.display = 'none';
+                errorMsgDiv.style.display = 'block';
+                hideLoadingUI();
+            }
+        }, 60000);
+    </script>
+</body>
+</html>

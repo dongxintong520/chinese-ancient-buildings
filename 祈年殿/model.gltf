@@ -1,0 +1,141 @@
+{
+    "asset": {
+        "generator": "https://3dviewer.net",
+        "version": "2.0"
+    },
+    "scene": 0,
+    "scenes": [
+        {
+            "nodes": [
+                0
+            ]
+        }
+    ],
+    "nodes": [
+        {
+            "mesh": 0
+        }
+    ],
+    "materials": [
+        {
+            "name": "TheHallOfPrayerForGoodHarvests.1001",
+            "pbrMetallicRoughness": {
+                "baseColorFactor": [
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                "baseColorTexture": {
+                    "index": 0
+                }
+            },
+            "emissiveFactor": [
+                0,
+                0,
+                0
+            ],
+            "doubleSided": true,
+            "alphaMode": "OPAQUE"
+        }
+    ],
+    "meshes": [
+        {
+            "name": "TheHallOfPrayerForGoodHarvests",
+            "primitives": [
+                {
+                    "attributes": {
+                        "POSITION": 1,
+                        "NORMAL": 2,
+                        "TEXCOORD_0": 3
+                    },
+                    "mode": 4,
+                    "material": 0,
+                    "indices": 0
+                }
+            ]
+        }
+    ],
+    "buffers": [
+        {
+            "uri": "model.bin",
+            "byteLength": 3408180
+        }
+    ],
+    "bufferViews": [
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 1199892,
+            "target": 34963
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 1199892,
+            "byteLength": 828108,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 2028000,
+            "byteLength": 828108,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 2856108,
+            "byteLength": 552072,
+            "target": 34962
+        }
+    ],
+    "accessors": [
+        {
+            "bufferView": 0,
+            "byteOffset": 0,
+            "componentType": 5125,
+            "count": 299973,
+            "type": "SCALAR"
+        },
+        {
+            "bufferView": 1,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 69009,
+            "min": [
+                -6.810763,
+                -3.452338,
+                -7.267037
+            ],
+            "max": [
+                7.632634,
+                6.603994,
+                6.993712
+            ],
+            "type": "VEC3"
+        },
+        {
+            "bufferView": 2,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 69009,
+            "type": "VEC3"
+        },
+        {
+            "bufferView": 3,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 69009,
+            "type": "VEC2"
+        }
+    ],
+    "images": [
+        {
+            "uri": "The_Hall_Of_Prayer_For_Good_Harvests_1001_f77b286b35.jpg"
+        }
+    ],
+    "textures": [
+        {
+            "source": 0
+        }
+    ]
+}

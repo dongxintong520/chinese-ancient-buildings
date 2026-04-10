@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国经典古建筑数据统计 | 文化遗产数字化</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "微软雅黑", "宋体", sans-serif;
+        }
+        body {
+            background-color: #f5f5f2;
+            color: #333;
+            background-image: url('https://picsum.photos/id/1048/1920/1080');
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            background-blend-mode: overlay;
+        }
+        /* 顶部导航栏样式 - 与首页保持一致风格 */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(23, 43, 77, 0.98);
+            color: #fff;
+            z-index: 999;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+        .top-nav:hover {
+            background: rgba(15, 35, 66, 0.98);
+        }
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 80px;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .nav-brand h1 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+        .nav-brand h1::before {
+            content: "🏯";
+            margin-right: 10px;
+            font-size: 24px;
+        }
+        /* 导航链接组 - 与首页导航栏风格一致 */
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        .nav-link-item {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 8px 20px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+        .nav-link-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        /* 数据概览区样式 */
+        .data-overview {
+            display: flex;
+            gap: 30px;
+        }
+        .data-item {
+            text-align: center;
+            background: rgba(255,255,255,0.1);
+            padding: 5px 12px;
+            border-radius: 20px;
+            min-width: 80px;
+        }
+        .data-item .num {
+            font-size: 18px;
+            font-weight: 700;
+            color: #f0c808;
+        }
+        .data-item .desc {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        .main-container {
+            margin-top: 100px;
+            padding: 30px 20px 80px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .module {
+            margin: 50px 0;
+            background: rgba(255,255,255,0.95);
+            border-radius: 12px;
+            padding: 35px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            border: 1px solid rgba(201,42,42,0.1);
+        }
+        .module-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .module-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #212529;
+            border-left: 4px solid #c92a2a;
+            padding-left: 15px;
+            position: relative;
+        }
+        .module-title::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 15px;
+            width: 60px;
+            height: 2px;
+            background: #c92a2a;
+        }
+        .module-desc {
+            color: #666;
+            font-size: 14px;
+            margin-top: 8px;
+            padding-left: 19px;
+        }
+        .chart-box {
+            width: 100%;
+            height: 600px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 15px;
+            background: #fff;
+            display: none;
+        }
+        .chart-box.active {
+            display: block;
+        }
+        .chart-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .chart-tab {
+            padding: 8px 18px;
+            background: #f1f1f1;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .chart-tab.active {
+            background: #c92a2a;
+            color: #fff;
+        }
+        .chart-tab:hover:not(.active) {
+            background: #e5e5e5;
+        }
+        .chart-row {
+            display: flex;
+            gap: 25px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+        .chart-col-5 {
+            width: calc(40% - 12px);
+            height: 420px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 15px;
+            background: #fff;
+        }
+        .chart-col-7 {
+            width: calc(60% - 12px);
+            height: 420px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 15px;
+            background: #fff;
+        }
+        .card-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-top: 25px;
+        }
+        .build-card {
+            width: calc(100% / 3 - 17px);
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.4s ease;
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        .build-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: #c92a2a;
+            transition: width 0.3s;
+        }
+        .build-card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            transform: translateY(-8px);
+        }
+        .build-card:hover::before {
+            width: 8px;
+        }
+        .build-card .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #c92a2a;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-tag {
+            font-size: 12px;
+            padding: 3px 8px;
+            background: rgba(201,42,42,0.1);
+            color: #c92a2a;
+            border-radius: 12px;
+        }
+        .build-card .card-item {
+            font-size: 14px;
+            line-height: 2;
+            color: #666;
+            display: flex;
+            align-items: flex-start;
+        }
+        .build-card .card-item::before {
+            content: "•";
+            color: #c92a2a;
+            margin-right: 8px;
+            margin-top: 6px;
+        }
+        .timeline {
+            position: relative;
+            margin: 40px 0;
+            padding-left: 30px;
+        }
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: #c92a2a;
+            border-radius: 1px;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 35px;
+        }
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: -36px;
+            top: 0;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #fff;
+            border: 3px solid #c92a2a;
+            z-index: 1;
+        }
+        .timeline-year {
+            font-size: 16px;
+            font-weight: 700;
+            color: #c92a2a;
+            margin-bottom: 8px;
+        }
+        .timeline-content {
+            background: rgba(255,255,255,0.8);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .timeline-buildings {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .timeline-building {
+            padding: 5px 12px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            font-size: 13px;
+            border: 1px solid #eee;
+        }
+        .heritage-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 25px;
+        }
+        .heritage-card {
+            width: calc(100% / 2 - 10px);
+            display: flex;
+            gap: 15px;
+            background: #fafafa;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #eee;
+            transition: all 0.3s;
+        }
+        .heritage-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        .heritage-icon {
+            font-size: 32px;
+            color: #c92a2a;
+            min-width: 40px;
+            text-align: center;
+        }
+        .heritage-info {
+            flex: 1;
+        }
+        .heritage-title {
+            font-size: 16px;
+            color: #212529;
+            margin-bottom: 5px;
+        }
+        .heritage-detail {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 8px 8px 0 0;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+        .footer-link {
+            color: #c92a2a;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .footer-link:hover {
+            color: #9a1f1f;
+            text-decoration: underline;
+        }
+        @media (max-width: 1200px) {
+            .chart-col-5, .chart-col-7 {
+                width: 100%;
+                height: 400px;
+            }
+            .build-card {
+                width: calc(100% / 2 - 12px);
+            }
+            .chart-box {
+                height: 500px;
+            }
+        }
+        @media (max-width: 992px) {
+            .nav-container {
+                padding: 0 20px;
+                height: 70px;
+            }
+            .nav-brand h1 {
+                font-size: 16px;
+            }
+            .nav-links {
+                gap: 15px;
+            }
+            .nav-link-item {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+            .data-overview {
+                gap: 12px;
+            }
+            .data-item {
+                min-width: 70px;
+                padding: 3px 8px;
+            }
+            .data-item .num {
+                font-size: 14px;
+            }
+            .data-item .desc {
+                font-size: 10px;
+            }
+            .module {
+                padding: 25px 15px;
+            }
+            .heritage-card {
+                width: 100%;
+            }
+        }
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                height: auto;
+                padding: 12px 20px;
+                align-items: flex-start;
+            }
+            .nav-links {
+                margin-top: 10px;
+                flex-wrap: wrap;
+            }
+            .data-overview {
+                margin-top: 10px;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+            .main-container {
+                margin-top: 130px;
+                padding: 20px 15px 60px;
+            }
+            .module-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .chart-tabs {
+                width: 100%;
+            }
+            .chart-tab {
+                flex: 1;
+                min-width: 80px;
+                text-align: center;
+            }
+        }
+        @media (max-width: 576px) {
+            .build-card {
+                width: 100%;
+            }
+            .chart-box {
+                height: 400px;
+            }
+            .chart-col-5, .chart-col-7 {
+                height: 320px;
+            }
+            .module-title {
+                font-size: 18px;
+            }
+            .timeline {
+                padding-left: 20px;
+            }
+            .timeline-dot {
+                left: -26px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 - 风格与首页/关于我们页面保持一致，包含跳转按钮 -->
+    <div class="top-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>中国经典古建筑营建数据统计 | 地域·耗时·用材·用工</h1>
+            </div>
+            <div class="nav-links">
+                <!-- 首页按钮：跳转到 map.html（交互地图首页） -->
+                <a href="map.html" class="nav-link-item">🏠 首页</a>
+                <!-- 建筑掠影按钮：当前页面，保持活跃样式（不跳转或高亮） -->
+                <a href="javascript:void(0);" class="nav-link-item active-nav" style="background: rgba(255, 255, 255, 0.25); border-bottom: 2px solid #ffd966;">📜 建筑掠影</a>
+                <!-- 关于我们按钮：跳转到 women.html -->
+                <a href="women.html" class="nav-link-item">📖 关于我们</a>
+            </div>
+            <div class="data-overview">
+                <div class="data-item">
+                    <div class="num">34省</div>
+                    <div class="desc">统计覆盖</div>
+                </div>
+                <div class="data-item">
+                    <div class="num">1800+年</div>
+                    <div class="desc">营建跨度</div>
+                </div>
+                <div class="data-item">
+                    <div class="num">4大类</div>
+                    <div class="desc">核心用材</div>
+                </div>
+                <div class="data-item">
+                    <div class="num">5处</div>
+                    <div class="desc">世界遗产</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="module">
+            <div class="module-header">
+                <div>
+                    <h2 class="module-title">古建筑文化遗产数字化统计</h2>
+                    <p class="module-desc">整合经典古建筑核心数据，从地域分布、营建周期、用材用工等维度立体化呈现中国古建筑的匠心与智慧</p>
+                </div>
+            </div>
+            <div style="background: #fafafa; padding: 20px; border-radius: 8px; border-left: 4px solid #c92a2a;">
+                <p style="color: #333; line-height: 1.8; font-size: 15px;">
+                    中国古建筑承载数千年文明积淀，从岳阳楼、西安钟楼到祈年殿、福建土楼，从王家大院、滕王阁到孔府，每一座建筑都是工艺与文化的结晶。本页面通过数据可视化呈现营建密码。
+                </p>
+            </div>
+        </div>
+
+        <div class="module">
+            <div class="module-header">
+                <div>
+                    <h2 class="module-title">全国34省古建筑数量统计</h2>
+                    <p class="module-desc">涵盖全国34个省级行政区，统计各省份代表性古建筑数量分布</p>
+                </div>
+            </div>
+            <div class="chart-tabs">
+                <button class="chart-tab active" data-target="mapChart">全国数量分布</button>
+                <button class="chart-tab" data-target="typeChart">建筑类型占比</button>
+                <button class="chart-tab" data-target="heritageMapChart">世界遗产分布</button>
+            </div>
+            <div class="chart-box active" id="mapChart"></div>
+            <div class="chart-box" id="typeChart"></div>
+            <div class="chart-box" id="heritageMapChart"></div>
+            
+            <table class="table table-bordered table-hover mt-4">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col" style="width: 15%;">省份/行政区</th>
+                        <th scope="col" style="width: 30%;">代表性古建筑</th>
+                        <th scope="col" style="width: 25%;">建筑类型</th>
+                        <th scope="col" style="width: 15%;">数量（处）</th>
+                        <th scope="col" style="width: 15%;">世界遗产</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>甘肃</td><td>莫高窟</td><td>石窟寺建筑群</td><td>1</td><td>是</td></tr>
+                    <tr><td>湖南</td><td>岳阳楼</td><td>楼阁式古建筑</td><td>1</td><td>否</td></tr>
+                    <tr><td>陕西</td><td>西安钟楼</td><td>钟鼓楼古建筑</td><td>1</td><td>否</td></tr>
+                    <tr><td>北京</td><td>故宫、天坛</td><td>皇家宫殿/坛庙</td><td>2</td><td>是</td></tr>
+                    <tr><td>河北</td><td>承德避暑山庄</td><td>皇家宫苑建筑群</td><td>1</td><td>是</td></tr>
+                    <tr><td>福建</td><td>承启楼（土楼）</td><td>夯土民居建筑群</td><td>1</td><td>是</td></tr>
+                    <tr><td>江苏</td><td>艺圃园林、苏州园林</td><td>江南文人园林</td><td>2</td><td>是</td></tr>
+                    <tr><td>山西</td><td>应县木塔、五台山佛光寺</td><td>木构建筑/寺庙</td><td>3</td><td>是</td></tr>
+                    <tr><td>河南</td><td>龙门石窟、少林寺</td><td>石窟寺/寺庙</td><td>2</td><td>是</td></tr>
+                    <tr><td>安徽</td><td>宏村、西递</td><td>古村落建筑群</td><td>2</td><td>是</td></tr>
+                    <tr><td>四川</td><td>乐山大佛、都江堰</td><td>石刻/水利建筑</td><td>2</td><td>是</td></tr>
+                    <tr><td>云南</td><td>丽江古城、崇圣寺三塔</td><td>古城/塔庙</td><td>2</td><td>是</td></tr>
+                    <tr><td>西藏</td><td>布达拉宫、大昭寺</td><td>宫殿/寺庙</td><td>2</td><td>是</td></tr>
+                    <tr><td>其他省份</td><td>各省份代表性古建筑</td><td>多样类型</td><td>1-2</td><td>部分是</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="module">
+            <div class="module-header">
+                <div>
+                    <h2 class="module-title">古建筑营建年代脉络</h2>
+                    <p class="module-desc">跨越1800余年营造史，见证风格演变</p>
+                </div>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">东汉（215年）</div>
+                    <div class="timeline-content">
+                        <p>岳阳楼雏形“阅军楼”始建</p>
+                        <div class="timeline-buildings"><span class="timeline-building">岳阳楼</span></div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">唐代（653年）</div>
+                    <div class="timeline-content">
+                        <p>滕王阁始建，江南名楼初成</p>
+                        <div class="timeline-buildings"><span class="timeline-building">滕王阁</span></div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">北宋（1038年）</div>
+                    <div class="timeline-content">
+                        <p>孔府始建，天下第一家初建</p>
+                        <div class="timeline-buildings"><span class="timeline-building">孔府</span></div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">明代（1384-1420年）</div>
+                    <div class="timeline-content">
+                        <p>西安钟楼、祈年殿相继建成，官式建筑成熟</p>
+                        <div class="timeline-buildings"><span class="timeline-building">西安钟楼</span><span class="timeline-building">祈年殿</span></div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">明清（1628-1912年）</div>
+                    <div class="timeline-content">
+                        <p>土楼、王家大院鼎盛营造，民居建筑巅峰</p>
+                        <div class="timeline-buildings"><span class="timeline-building">承启楼</span><span class="timeline-building">王家大院</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="module">
+            <div class="module-header">
+                <div>
+                    <h2 class="module-title">营建总耗时对比</h2>
+                    <p class="module-desc">从数年到数百年，体现工程复杂度</p>
+                </div>
+            </div>
+            <div class="chart-col-7" id="timeChart" style="width: 100%; height: 500px;"></div>
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div style="background: #f8f9fa; padding: 18px; border-radius: 8px;">
+                        <h5 style="color: #c92a2a; margin-bottom: 12px; font-size: 16px;">📊 耗时分析</h5>
+                        <ul style="line-height: 2; color: #666; font-size: 14px;">
+                            <li>孔府：近500年；王家大院：300余年</li>
+                            <li>承启楼：家族三代建造，耗时81年</li>
+                            <li>祈年殿：始建14年，重建7年</li>
+                            <li>楼阁类：重建周期1-4年</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div style="background: #f8f9fa; padding: 18px; border-radius: 8px;">
+                        <h5 style="color: #c92a2a; margin-bottom: 12px; font-size: 16px;">🏗️ 工程特点</h5>
+                        <ul style="line-height: 2; color: #666; font-size: 14px;">
+                            <li>皇家/府邸：规模大、周期长、规格高</li>
+                            <li>民居：家族自建，周期分散</li>
+                            <li>楼阁：屡毁屡建，单次工期较短</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="module">
+            <div class="module-header">
+                <div>
+                    <h2 class="module-title">用材&用工量对比</h2>
+                    <p class="module-desc">用材规模与用工数量，展现营建投入</p>
+                </div>
+            </div>
+            <div class="chart-row">
+                <div class="chart-col-5" id="materialChart"></div>
+                <div class="chart-col-7" id="workChart"></div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <div style="background: #fafafa; padding: 20px; border-radius: 8px;">
+                        <h5 style="color: #c92a2a; margin-bottom: 15px; font-size: 16px;">🔍 核心数据总表</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-sm">
+                                <thead>
+                                    <tr><th>建筑</th><th>木材(m³)</th><th>石材(m³)</th><th>特色用材</th><th>用工(万工日)</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>岳阳楼</td><td>1550</td><td>1100</td><td>楠木金柱</td><td>3</td></tr>
+                                    <tr><td>西安钟楼</td><td>1800</td><td>1200</td><td>红松、榫卯</td><td>7.5</td></tr>
+                                    <tr><td>承启楼</td><td>1600</td><td>3200</td><td>生土、糯米</td><td>12</td></tr>
+                                    <tr><td>祈年殿</td><td>1000+</td><td>15000+</td><td>金丝楠木、汉白玉</td><td>120</td></tr>
+                                    <tr><td>王家大院</td><td>10000+</td><td>20000+</td><td>青石、三雕</td><td>100+</td></tr>
+                                    <tr><td>滕王阁</td><td>5000</td><td>12000</td><td>仿宋琉璃</td><td>10</td></tr>
+                                    <tr><td>孔府</td><td>12000</td><td>25000</td><td>楠木、金砖</td><td>180</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="module">
+            <div class="module-header">
+                <div>
+                    <h2 class="module-title">建筑特色速览</h2>
+                    <p class="module-desc">7大建筑核心信息</p>
+                </div>
+            </div>
+            <div class="card-list">
+                <div class="build-card"><div class="card-title">岳阳楼<span class="card-tag">江南名楼</span></div><div class="card-item">始建215年，盔顶纯木无钉</div><div class="card-item">四柱通天，《岳阳楼记》传世</div><div class="card-item">木材1550m³，用工3万工日</div><div class="card-item">中国唯一盔顶古建筑</div></div>
+                <div class="build-card"><div class="card-title">西安钟楼<span class="card-tag">古都地标</span></div><div class="card-item">明1384年初建，1582年移建</div><div class="card-item">707组榫卯，无一颗长钉</div><div class="card-item">移建1公里无损，建筑奇迹</div><div class="card-item">用工7.5万工日</div></div>
+                <div class="build-card"><div class="card-title">承启楼<span class="card-tag">世界遗产</span></div><div class="card-item">土楼之王，直径73米</div><div class="card-item">生土+糯米+红糖夯筑</div><div class="card-item">耗时81年，用工12万工日</div><div class="card-item">400间房，可住800人</div></div>
+                <div class="build-card"><div class="card-title">祈年殿<span class="card-tag">世界遗产</span></div><div class="card-item">明永乐始建，清光绪重建</div><div class="card-item">28根楠木柱，对应天文历法</div><div class="card-item">汉白玉台基，蓝色琉璃顶</div><div class="card-item">用工超120万工日</div></div>
+                <div class="build-card"><div class="card-title">王家大院<span class="card-tag">民间故宫</span></div><div class="card-item">明清营建，历时300余年</div><div class="card-item">总面积25万㎡，2078间房</div><div class="card-item">砖木雕三雕艺术精湛</div><div class="card-item">用工超百万工日</div></div>
+                <div class="build-card"><div class="card-title">滕王阁<span class="card-tag">西江第一楼</span></div><div class="card-item">唐653年初建，屡毁屡建29次</div><div class="card-item">高57.5米，明三暗七结构</div><div class="card-item">《滕王阁序》名扬天下</div><div class="card-item">1989年重建，用工10万工日</div></div>
+                <div class="build-card"><div class="card-title">孔府<span class="card-tag">世界遗产</span></div><div class="card-item">天下第一家，北宋始建</div><div class="card-item">九进院落，463间房屋</div><div class="card-item">前衙后宅，礼制典范</div><div class="card-item">用工超180万工日</div></div>
+            </div>
+        </div>
+
+        <div class="module">
+            <div class="module-header">
+                <div>
+                    <h2 class="module-title">世界遗产古建筑</h2>
+                    <p class="module-desc">列入世界文化遗产的建筑</p>
+                </div>
+            </div>
+            <div class="heritage-list">
+                <div class="heritage-card"><div class="heritage-icon">🏯</div><div class="heritage-info"><div class="heritage-title">祈年殿（北京天坛）</div><div class="heritage-detail">1998年列入世界文化遗产，明清皇家祭祀建筑，天圆礼制典范。</div></div></div>
+                <div class="heritage-card"><div class="heritage-icon">🏡</div><div class="heritage-info"><div class="heritage-title">福建土楼（承启楼）</div><div class="heritage-detail">2008年列入，夯土民居巅峰，聚族而居文化载体。</div></div></div>
+                <div class="heritage-card"><div class="heritage-icon">🏛️</div><div class="heritage-info"><div class="heritage-title">孔府（曲阜三孔）</div><div class="heritage-detail">1994年列入，天下第一家，儒家文化实物象征。</div></div></div>
+            </div>
+        </div>
+
+        <div class="module">
+            <div class="module-header">
+                <div>
+                    <h2 class="module-title">数据说明与来源</h2>
+                    <p class="module-desc">确保数据准确权威</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6"><div style="background: #f8f9fa; padding: 20px; border-radius: 8px; height: 100%;"><h5 style="color: #c92a2a; margin-bottom: 15px; font-size: 16px;">📊 统计说明</h5><ul style="line-height: 2.2; color: #666; font-size: 14px;"><li>对象：岳阳楼、西安钟楼、承启楼、祈年殿、王家大院、滕王阁、孔府</li><li>用材：主体工程用量，不含附属设施</li><li>用工：核心工程工日，含工匠与力工</li><li>耗时：含初建、重建、历代营建周期</li><li>遗产：以联合国教科文组织公布为准</li></ul></div></div>
+                <div class="col-md-6"><div style="background: #f8f9fa; padding: 20px; border-radius: 8px; height: 100%;"><h5 style="color: #c92a2a; margin-bottom: 15px; font-size: 16px;">📚 数据来源</h5><ul style="line-height: 2.2; color: #666; font-size: 14px;"><li>古建筑修缮工程报告、考古实测数据</li><li>《中国古建筑史》《营造法式》</li><li>国家文物局、世界遗产委员会资料</li><li>地方文物部门公开档案</li><li>古建专家学术研究成果</li></ul></div></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-links">
+                <a href="#" class="footer-link">关于项目</a>
+                <a href="#" class="footer-link">数据日志</a>
+                <a href="#" class="footer-link">保护现状</a>
+                <a href="#" class="footer-link">研究资源</a>
+            </div>
+            <p>中国经典古建筑数据统计 © 2026</p>
+            <p>数据来源：实测史料、考古报告、文物机构官方发布</p>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            var mapChart = initMapChart();
+            var typeChart = initTypeChart();
+            var heritageMapChart = initHeritageChart();
+            var timeChart = initTimeChart();
+            var materialChart = initMaterialChart();
+            var workChart = initWorkChart();
+
+            $('.chart-tab').on('click', function() {
+                var targetId = $(this).data('target');
+                $('.chart-tab').removeClass('active');
+                $(this).addClass('active');
+                $('.chart-box').removeClass('active');
+                $('#' + targetId).addClass('active');
+                setTimeout(function() {
+                    if (targetId === 'mapChart') mapChart.resize();
+                    if (targetId === 'typeChart') typeChart.resize();
+                    if (targetId === 'heritageMapChart') heritageMapChart.resize();
+                }, 100);
+            });
+
+            $(window).on('resize', function() {
+                mapChart.resize(); typeChart.resize(); heritageMapChart.resize();
+                timeChart.resize(); materialChart.resize(); workChart.resize();
+            });
+
+            function initMapChart() {
+                var chart = echarts.init(document.getElementById('mapChart'));
+                chart.setOption({
+                    title: {text: '全国34省古建筑数量分布', left: 'center', textStyle: {fontSize: 18, fontWeight: 700}},
+                    tooltip: {trigger: 'axis', formatter: function(params) { return params[0].name + '<br/>总数：' + params[0].data + '处'; }},
+                    grid: {left: '8%', right: '5%', bottom: '25%', top: '10%', containLabel: true},
+                    xAxis: {type: 'category', data: ['北京','天津','河北','山西','内蒙古','辽宁','吉林','黑龙江','上海','江苏','浙江','安徽','福建','江西','山东','河南','湖北','湖南','广东','广西','海南','重庆','四川','贵州','云南','西藏','陕西','甘肃','青海','宁夏','新疆','香港','澳门','台湾'], axisLabel: {rotate: 45, fontSize: 11, interval: 0}},
+                    yAxis: {type: 'value', name: '古建筑数量（处）', min: 0, max: 4},
+                    series: [{type: 'bar', data: [2,1,1,3,1,1,1,1,1,2,1,2,1,1,1,2,1,1,1,1,1,1,2,1,2,2,2,1,1,1,1,1,1,1], itemStyle: {color: '#c92a2a', borderRadius: [6,6,0,0]}, barWidth: '60%', label: {show: true, position: 'top'}}]
+                });
+                return chart;
+            }
+            function initTypeChart() {
+                var chart = echarts.init(document.getElementById('typeChart'));
+                chart.setOption({
+                    title: {text: '全国古建筑类型分布占比', left: 'center'},
+                    tooltip: {trigger: 'item'},
+                    legend: {orient: 'vertical', left: 'left'},
+                    series: [{type: 'pie', radius: ['40%','70%'], center: ['65%','50%'], data: [{value:8,name:'寺庙/宗教建筑'},{value:6,name:'皇家建筑'},{value:5,name:'古村落/民居'},{value:4,name:'园林建筑'},{value:3,name:'楼阁式建筑'},{value:3,name:'石窟寺建筑'},{value:5,name:'其他类型'}], color: ['#c92a2a','#dc3545','#fd7e14','#ffc107','#212529','#6c757d','#343a40']}]
+                });
+                return chart;
+            }
+            function initHeritageChart() {
+                var chart = echarts.init(document.getElementById('heritageMapChart'));
+                chart.setOption({
+                    title: {text: '全国古建筑世界遗产分布', left: 'center'},
+                    tooltip: {trigger: 'axis', formatter: function(params) { return params[0].name + '<br/>世界遗产：' + (params[0].data === 1 ? '是' : '否'); }},
+                    grid: {left: '8%', right: '5%', bottom: '25%', top: '10%'},
+                    xAxis: {type: 'category', data: ['北京','山西','陕西','河南','甘肃','江苏','安徽','福建','湖南','河北','四川','云南','西藏','山东','浙江','广东','湖北','江西','广西','重庆','贵州','内蒙古','辽宁','吉林','黑龙江','上海','海南','青海','宁夏','新疆','香港','澳门','台湾'], axisLabel: {rotate: 45, fontSize: 11, interval: 0}},
+                    yAxis: {type: 'value', name: '是否为世界遗产', axisLabel: {formatter: function(v) { return v === 1 ? '是' : (v === 0 ? '否' : ''); }}, min: 0, max: 1},
+                    series: [{type: 'bar', data: [1,1,0,1,1,1,1,1,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], itemStyle: {color: function(p) { return p.data === 1 ? '#198754' : '#666'; }, borderRadius: [6,6,0,0]}, barWidth: '60%'}]
+                });
+                return chart;
+            }
+            function initTimeChart() {
+                var chart = echarts.init(document.getElementById('timeChart'));
+                chart.setOption({title: {text: '营建总耗时（年）', left: 'center'}, tooltip: {trigger: 'axis'}, grid: {left: '15%'}, xAxis: {type: 'value', name: '年'}, yAxis: {type: 'category', data: ['孔府','王家大院','承启楼','祈年殿','滕王阁','岳阳楼','西安钟楼']}, series: [{type: 'bar', data: [500,300,81,21,4,2,1], itemStyle: {color: '#c92a2a'}}]});
+                return chart;
+            }
+            function initMaterialChart() {
+                var chart = echarts.init(document.getElementById('materialChart'));
+                chart.setOption({title: {text: '用材对比（木材/石材相对值）', left: 'center'}, tooltip: {trigger: 'axis'}, grid: {left: '8%'}, xAxis: {type: 'category', data: ['岳阳楼','西安钟楼','承启楼','祈年殿','王家大院','滕王阁','孔府'], axisLabel: {rotate: 30}}, yAxis: {type: 'value', name: '用量(m³)'}, series: [{name: '木材', type: 'bar', data: [1550,1800,1600,1000,10000,5000,12000], itemStyle: {color: '#c92a2a'}}, {name: '石材', type: 'bar', data: [1100,1200,3200,15000,20000,12000,25000], itemStyle: {color: '#fd7e14'}}]});
+                return chart;
+            }
+            function initWorkChart() {
+                var chart = echarts.init(document.getElementById('workChart'));
+                chart.setOption({title: {text: '用工量（万工日）', left: 'center'}, tooltip: {trigger: 'axis'}, grid: {left: '8%'}, xAxis: {type: 'category', data: ['岳阳楼','西安钟楼','承启楼','滕王阁','祈年殿','王家大院','孔府'], axisLabel: {rotate: 30}}, yAxis: {type: 'value', name: '万工日'}, series: [{type: 'bar', data: [3,7.5,12,10,120,100,180], itemStyle: {color: '#c92a2a'}}]});
+                return chart;
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

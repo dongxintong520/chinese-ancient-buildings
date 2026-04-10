@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>中国古代工程奇迹 · 交互地图（专属详情页版）</title>
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=SSpJnn57rnIpyLeOJnqsoKLtSex2xxbc"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a5a3a 0%, #0e3a22 100%);
+            font-family: 'Microsoft YaHei', 'Noto Serif SC', 'Segoe UI', 'PingFang SC', serif;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #fff9ef;
+            border-radius: 32px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8b3c2c, #b55a3a);
+            padding: 28px 32px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+
+        .nav-bar {
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            padding-top: 15px;
+        }
+
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 8px 20px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-menu a.active {
+            background: rgba(255, 255, 255, 0.25);
+            border-bottom: 2px solid #ffd966;
+        }
+
+        @media (max-width: 600px) {
+            .nav-menu {
+                gap: 15px;
+            }
+            .nav-menu a {
+                font-size: 13px;
+                padding: 6px 12px;
+            }
+        }
+
+        .two-columns {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .map-area {
+            flex: 2.2;
+            background: #f0e8da;
+            padding: 25px;
+            min-width: 600px;
+        }
+
+        .map-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .map-header h3 {
+            color: #6b2e1f;
+            font-size: 22px;
+        }
+
+        #chinaMap {
+            width: 100%;
+            height: 600px;
+            background: #eef2f5;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .map-note {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #8b6b4c;
+            background: #e8dccc;
+            padding: 8px 16px;
+            border-radius: 30px;
+            display: inline-block;
+            width: auto;
+        }
+
+        .info-area {
+            flex: 1;
+            background: white;
+            padding: 25px;
+            min-width: 320px;
+            border-left: 1px solid #e0cfb8;
+            max-height: 680px;
+            overflow-y: auto;
+        }
+
+        .heritage-card {
+            background: #fffaf2;
+            border-radius: 24px;
+            border-left: 6px solid #c46a48;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .card-head {
+            background: #fff3e8;
+            padding: 20px 24px;
+            border-bottom: 1px solid #eedbc8;
+        }
+
+        .card-head h2 {
+            color: #9b4a36;
+            font-size: 22px;
+        }
+
+        .card-head .location {
+            color: #b87a5a;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        .details {
+            padding: 20px 24px;
+        }
+
+        .detail-item {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0e2d0;
+            align-items: flex-start;
+        }
+
+        .detail-label {
+            width: 100px;
+            font-weight: bold;
+            color: #7a5a42;
+            text-align: left;
+            white-space: nowrap;
+            padding-top: 2px;
+        }
+
+        .detail-value {
+            flex: 1;
+            color: #4a3320;
+            line-height: 1.6;
+            padding-left: 8px;
+        }
+
+        .feature {
+            background: #fef0e4;
+            padding: 14px 18px;
+            border-radius: 16px;
+            margin-top: 20px;
+            color: #bc5a3c;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .btn-detail-page {
+            display: inline-block;
+            background: #bc603e;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-size: 15px;
+            font-weight: bold;
+            margin-top: 20px;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-detail-page:hover {
+            background: #9e4228;
+            transform: scale(0.98);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .stats-card {
+            background: #fef7ed;
+            border-radius: 24px;
+            padding: 20px;
+            margin-top: 10px;
+        }
+
+        .stats-card h4 {
+            text-align: center;
+            color: #9b4a36;
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+
+        .stat-item {
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #6b4a32;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 18px;
+            background: #e9dbc8;
+            font-size: 11px;
+            color: #7a5a42;
+        }
+
+        @media (max-width: 900px) {
+            .map-area {
+                min-width: auto;
+            }
+            #chinaMap {
+                height: 450px;
+            }
+            .header h1 {
+                font-size: 20px;
+            }
+        }
+
+        .info-window {
+            min-width: 240px;
+            padding: 6px 5px;
+            font-family: inherit;
+        }
+
+        .info-window h4 {
+            color: #c44c2c;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .info-window p {
+            font-size: 12px;
+            color: #4a3320;
+            margin-bottom: 10px;
+        }
+
+        .info-window button {
+            background: #c44c2c;
+            color: white;
+            border: none;
+            padding: 6px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: 0.2s;
+            margin-top: 4px;
+        }
+
+        .info-window button:hover {
+            background: #9e4228;
+        }
+        
+        .heritage-card {
+            transition: box-shadow 0.2s ease;
+        }
+        
+        .info-area::-webkit-scrollbar {
+            width: 6px;
+        }
+        .info-area::-webkit-scrollbar-track {
+            background: #f0e2d0;
+            border-radius: 8px;
+        }
+        .info-area::-webkit-scrollbar-thumb {
+            background: #c46a48;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="main-container">
+    <div class="header">
+        <h1>🏛️ 时空折叠 · 中国古代工程奇迹</h1>
+        <p>点击地图红色标记 → 查看建筑掠影 → “专属详情页” 深度探索</p>
+        <div class="nav-bar">
+            <ul class="nav-menu">
+                <li><a href="javascript:void(0);" class="active" id="nav-home">🏠 首页</a></li>
+                <li><a href="jianzhuyemian.html" id="nav-detail">📜 建筑掠影</a></li>
+                <li><a href="women.html" id="nav-about">📖 关于我们</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="two-columns">
+        <div class="map-area">
+            <div class="map-header">
+                <h3>🗺️ 华夏瑰宝 · 经典古建分布</h3>
+            </div>
+            <div id="chinaMap"></div>
+            <div class="map-note">
+                🖱️ 点击红色标记 → 弹出卡片 → 点击「专属详情页」跳转独立建筑档案
+            </div>
+        </div>
+        <div class="info-area">
+            <div class="heritage-card">
+                <div class="card-head">
+                    <h2 id="buildingName">西安钟楼</h2>
+                    <div class="location" id="locationText">陕西西安 · 国家级文化遗产</div>
+                </div>
+                <div class="details" id="detailsContent"></div>
+                <div style="padding: 0 24px 24px 24px;">
+                    <a id="detailPageLink" href="#" target="_blank" class="btn-detail-page">🔍 进入专属详情页 →</a>
+                </div>
+            </div>
+            <div class="stats-card">
+                <h4>📊 建筑文化索引</h4>
+                <div id="statsContent"></div>
+                <p style="font-size: 10px; text-align: center; margin-top: 12px; color: #b87a5a;">点击详情页领略完整营造史诗</p>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        📚 数据参考：中国文化遗产研究院 / 地方文保 | 地图数据 © 百度地图 | 点击红点后地图视角保持不变，详情页独立展示
+    </div>
+</div>
+
+<script>
+    var heritageSites = [
+        { 
+            name: "西安钟楼", 
+            city: "陕西西安", 
+            lat: 34.2614, 
+            lng: 108.9423, 
+            dynasty: "明·洪武十七年（1384年）", 
+            duration: "初建10个月，明万历移建5个月，历代多次重修", 
+            workers: "初建超6万工日，移建征调工匠5000名，总用工超7.5万工日", 
+            wood: "东北红松为主、楠木为局部，707组榫卯无铁钉，总用量约1800立方米", 
+            stone: "正方形花岗岩基座，边长35.5米高8.6米，总用量约1200立方米", 
+            brick: "绿色琉璃筒瓦超10万片，基座青砖超12万块，地面花砖5000余块", 
+            structure: "重檐三滴水、四角攒尖顶，全木结构",
+            height: "总高36米",
+            area: "约1300平方米",
+            level: "全国重点文物保护单位",
+            style: "明代官式建筑",
+            status: "中国现存最大、最完整的钟楼",
+            highlight: "中国现存规模最大、年代最久、保存最完好的钟楼，明万历年间整体迁移约1000米，是中国古代大型木结构整体迁移的巅峰案例。",
+            culture: "全国重点文物保护单位，西安城墙-钟鼓楼景区5A核心，见证西安600余年城市变迁。",
+            detailPage: "西安钟楼/BellTowerOfXian.html"
+        },
+        { 
+            name: "祈年殿", 
+            city: "北京", 
+            lat: 39.889926, 
+            lng: 116.419283, 
+            dynasty: "明清（始建明永乐，现存清光绪重建）", 
+            duration: "始建14年（1406-1420），嘉靖改建5年，光绪重建7年", 
+            workers: "始建超100万工日，重建超20万工日", 
+            wood: "金丝楠木为主，28根巨型楠木柱，总用量超1000立方米", 
+            stone: "三层汉白玉圆形须弥座，总用量超1.5万立方米", 
+            brick: "蓝色琉璃瓦超10万片，苏州御窑金砖超5000块", 
+            structure: "三重檐圆形大殿，纯木结构，无铁钉",
+            height: "总高38米",
+            area: "约2600平方米",
+            level: "世界文化遗产",
+            style: "明清皇家祭天建筑",
+            status: "中国古代祭天建筑最高典范",
+            highlight: "天坛核心建筑，中国古代祭天建筑巅峰，三重檐圆形大殿，全砖木结构无铁钉。",
+            culture: "皇家祭天祈谷之所，象征天圆地方，世界文化遗产核心组成。",
+            detailPage: "祈年殿/qiniandian.html"
+        },
+        { 
+            name: "王家大院", 
+            city: "山西晋中灵石县", 
+            lat: 36.8805, 
+            lng: 111.9172, 
+            dynasty: "明清（主体清康熙-嘉庆年间）", 
+            duration: "跨明清两朝，历时约300余年建成", 
+            workers: "累计用工超百万工日", 
+            wood: "以榆木、松木为主，总用量超万立方米", 
+            stone: "以本地青石为主，总用量超2万立方米", 
+            brick: "青砖超百万块，琉璃瓦数万片", 
+            structure: "窑洞与木结构结合，城堡式宅院",
+            height: "主楼高12米",
+            area: "总面积25万平方米，现存4.5万㎡",
+            level: "全国重点文物保护单位",
+            style: "晋商大院、北方民居",
+            status: "华夏民居第一宅",
+            highlight: "华夏民居第一宅，总面积25万平方米，231座院落、2078间房，依山而建。",
+            culture: "北方民居建筑典范，晋商文化载体，砖木雕三雕艺术精湛。",
+            detailPage: "wangjiadayuan.html"
+        },
+        { 
+            name: "滕王阁", 
+            city: "江西南昌", 
+            lat: 28.6843, 
+            lng: 115.8588, 
+            dynasty: "始建于唐代（653年），现存为1989年重建", 
+            duration: "1985年开工，历时4年建成", 
+            workers: "重建累计用工超10万工日", 
+            wood: "以优质松木、杉木为主，总用量超5000立方米", 
+            stone: "花岗岩、青石为主，总用量超1.2万立方米", 
+            brick: "琉璃瓦超8万片，青砖超50万块", 
+            structure: "明三暗七结构，歇山顶",
+            height: "主体高57.5米",
+            area: "建筑面积1.3万平方米",
+            level: "国家级文保单位",
+            style: "宋代楼阁式建筑",
+            status: "江南三大名楼之首",
+            highlight: "江南三大名楼之首，主体高57.5米，“明三暗七”结构。",
+            culture: "因王勃《滕王阁序》千古流传，国家级文保单位。",
+            detailPage: "tengwangge.html"
+        },
+        { 
+            name: "岳阳楼", 
+            city: "湖南岳阳", 
+            lat: 29.3846, 
+            lng: 113.0909, 
+            dynasty: "东汉始建，清光绪六年（1880年）重建", 
+            duration: "清重建11个月，1984年落架大修2年", 
+            workers: "清重建超1.2万工日", 
+            wood: "楠木金柱，纯木结构无铁钉，总用量约1550立方米", 
+            stone: "花岗岩台基，总用量约1100立方米", 
+            brick: "黄色琉璃瓦超10万片，青砖5万块", 
+            structure: "三层三檐，盔顶纯木结构",
+            height: "主楼高19.42米",
+            area: "约6000平方米",
+            level: "全国重点文物保护单位",
+            style: "清代江南楼阁",
+            status: "中国现存唯一盔顶古建筑",
+            highlight: "江南三大名楼之一，中国现存唯一盔顶古建筑。",
+            culture: "范仲淹《岳阳楼记》诞生地，世界文化遗产预备名录。",
+            detailPage: "yueyanglou.html"
+        },
+        { 
+            name: "孔府", 
+            city: "山东曲阜", 
+            lat: 35.5951, 
+            lng: 116.9908, 
+            dynasty: "北宋宝元元年（1038年）始建", 
+            duration: "累计营建近500年", 
+            workers: "历代修缮累计超百万工日", 
+            wood: "松木、楠木为主，总用量超1.2万立方米", 
+            stone: "青石、花岗岩为主，总用量超2.5万立方米", 
+            brick: "青灰瓦超30万片，青砖超150万块", 
+            structure: "九进院落，三路布局，前衙后宅",
+            height: "主楼高15米",
+            area: "占地8万平方米",
+            level: "世界文化遗产",
+            style: "明清官式贵族府邸",
+            status: "天下第一家",
+            highlight: "天下第一家，世界文化遗产“三孔”核心组成，占地8万平方米。",
+            culture: "孔子嫡系后裔衍圣公府，儒家文化圣地。",
+            detailPage: "孔府/kongzifu.html"
+        },
+        { 
+            name: "福建土楼", 
+            city: "福建龙岩永定区", 
+            lat: 24.6783, 
+            lng: 116.9925, 
+            dynasty: "宋元萌芽，明清鼎盛", 
+            duration: "承启楼历时81年建成", 
+            workers: "承启楼累计用工约12万工日", 
+            wood: "闽西杉木为主，总用量约1600立方米", 
+            stone: "花岗岩为主，总用量约3200立方米", 
+            brick: "生土夯墙，青砖青瓦约130万块", 
+            structure: "圆形生土夯筑，内部木构",
+            height: "主楼高16.4米",
+            area: "承启楼直径73米，占地约5000㎡",
+            level: "世界文化遗产",
+            style: "客家民居",
+            status: "东方古城堡",
+            highlight: "世界文化遗产，承启楼为土楼之王，直径73米400间房。",
+            culture: "客家先民智慧结晶，生土夯筑工艺巅峰。",
+            detailPage: "福建土楼/tulou.html"
+        }
+    ];
+
+    var map;
+    var markers = [];
+    var currentSite = null;
+    var currentInfoWindow = null;
+
+    function updateInfoPanelAndButton(site) {
+        if (!site) return;
+        currentSite = site;
+        document.getElementById('buildingName').innerHTML = site.name;
+        document.getElementById('locationText').innerHTML = `${site.city} · 国家级文化遗产`;
+        document.getElementById('detailsContent').innerHTML = `
+            <div class="detail-item"><span class="detail-label">🏮 营建时期</span><span class="detail-value">${site.dynasty}</span></div>
+            <div class="detail-item"><span class="detail-label">⏱️ 营建周期</span><span class="detail-value">${site.duration}</span></div>
+            <div class="detail-item"><span class="detail-label">👥 匠作规模</span><span class="detail-value">${site.workers}</span></div>
+            <div class="detail-item"><span class="detail-label">🪵 主要木材</span><span class="detail-value">${site.wood}</span></div>
+            <div class="detail-item"><span class="detail-label">🪨 石材特色</span><span class="detail-value">${site.stone}</span></div>
+            <div class="detail-item"><span class="detail-label">🧱 砖瓦工艺</span><span class="detail-value">${site.brick}</span></div>
+            <div class="detail-item"><span class="detail-label">🏯 建筑结构</span><span class="detail-value">${site.structure}</span></div>
+            <div class="detail-item"><span class="detail-label">📏 建筑高度</span><span class="detail-value">${site.height}</span></div>
+            <div class="detail-item"><span class="detail-label">🌍 占地面积</span><span class="detail-value">${site.area}</span></div>
+            <div class="detail-item"><span class="detail-label">⭐ 保护等级</span><span class="detail-value">${site.level}</span></div>
+            <div class="detail-item"><span class="detail-label">🎨 建筑风格</span><span class="detail-value">${site.style}</span></div>
+            <div class="detail-item"><span class="detail-label">🏅 历史地位</span><span class="detail-value">${site.status}</span></div>
+            <div class="feature">✨ ${site.highlight}<br>📖 文化印记：${site.culture || "中华瑰宝"}</div>
+        `;
+        const detailLink = document.getElementById('detailPageLink');
+        if (site.detailPage) {
+            detailLink.href = site.detailPage;
+            detailLink.target = "_blank";
+            detailLink.innerText = "🔍 进入专属详情页 →";
+        } else {
+            detailLink.href = "#";
+            detailLink.innerText = "⚠️ 详情页建设中";
+        }
+        document.getElementById('statsContent').innerHTML = `
+            <div class="stat-item">📜 <strong>营造智慧</strong>：${(site.culture || site.highlight).substring(0, 50)}</div>
+            <div class="stat-item">🏛️ <strong>遗产地位</strong>：国家级重点文保 / 世界文化遗产</div>
+            <div class="stat-item">✨ <strong>特色标签</strong>：${site.dynasty} · 古代匠作巅峰</div>
+        `;
+    }
+
+    function resetMarkersToRed() {
+        markers.forEach(marker => {
+            marker.setIcon(new BMap.Icon(
+                "https://api.map.baidu.com/images/marker_red.png",
+                new BMap.Size(23, 25)
+            ));
+        });
+    }
+
+    function bindMarkerClick(marker, site, index) {
+        marker.addEventListener("click", function(e) {
+            if (e && e.stopPropagation) e.stopPropagation();
+            updateInfoPanelAndButton(site);
+            resetMarkersToRed();
+            
+            if (currentInfoWindow) {
+                map.closeInfoWindow(currentInfoWindow);
+            }
+            const infoContent = `
+                <div class="info-window">
+                    <h4>🏛️ ${site.name}</h4>
+                    <p>📍 ${site.city}</p>
+                    <p>📜 ${site.highlight.substring(0, 60)}</p>
+                    <button id="infoWinDetailBtn_${index}">📖 专属详情页</button>
+                </div>
+            `;
+            const infoWindow = new BMap.InfoWindow(infoContent, {
+                width: 280,
+                height: 150,
+                title: "🏛️ 文化遗产速览"
+            });
+            const point = marker.getPosition();
+            map.openInfoWindow(infoWindow, point);
+            currentInfoWindow = infoWindow;
+            
+            setTimeout(() => {
+                const btn = document.getElementById(`infoWinDetailBtn_${index}`);
+                if (btn) {
+                    const newBtn = btn.cloneNode(true);
+                    btn.parentNode.replaceChild(newBtn, btn);
+                    newBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (site.detailPage) {
+                            window.open(site.detailPage, '_blank');
+                        } else {
+                            alert("详情页面尚未创建");
+                        }
+                    });
+                }
+            }, 50);
+        });
+    }
+
+    function initMap() {
+        map = new BMap.Map("chinaMap");
+        map.centerAndZoom(new BMap.Point(108.0, 34.0), 5);
+        map.enableScrollWheelZoom(true);
+        map.enableDragging(true);
+        map.setMapType(BMAP_NORMAL_MAP);
+        map.addControl(new BMap.ScaleControl());
+        map.addControl(new BMap.NavigationControl());
+        
+        heritageSites.forEach((site, idx) => {
+            const point = new BMap.Point(site.lng, site.lat);
+            const marker = new BMap.Marker(point);
+            marker.setIcon(new BMap.Icon(
+                "https://api.map.baidu.com/images/marker_red.png",
+                new BMap.Size(23, 25)
+            ));
+            bindMarkerClick(marker, site, idx);
+            map.addOverlay(marker);
+            markers.push(marker);
+        });
+        
+        if (heritageSites.length > 0) {
+            updateInfoPanelAndButton(heritageSites[0]);
+        }
+    }
+    
+    // 导航栏：首页重置地图，建筑掠影和关于我们直接跳转
+    function initNavigation() {
+        const navHome = document.getElementById('nav-home');
+        const navDetail = document.getElementById('nav-detail');
+        const navAbout = document.getElementById('nav-about');
+        
+        function removeActiveClass() {
+            document.querySelectorAll('.nav-menu a').forEach(link => link.classList.remove('active'));
+        }
+        
+        // 首页：重置地图
+        if (navHome) {
+            navHome.addEventListener('click', function(e) {
+                e.preventDefault();
+                removeActiveClass();
+                this.classList.add('active');
+                if (map) {
+                    map.centerAndZoom(new BMap.Point(108.0, 34.0), 5);
+                    if (currentInfoWindow) {
+                        map.closeInfoWindow(currentInfoWindow);
+                        currentInfoWindow = null;
+                    }
+                    if (heritageSites.length) {
+                        updateInfoPanelAndButton(heritageSites[0]);
+                        resetMarkersToRed();
+                    }
+                }
+            });
+        }
+        
+        // 建筑掠影：直接跳转
+        if (navDetail) {
+            navDetail.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = 'jianzhuyemian.html';
+            });
+        }
+        
+        // 关于我们：直接跳转（不再弹出alert）
+        if (navAbout) {
+            navAbout.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = 'women.html';
+            });
+        }
+    }
+    
+    window.addEventListener('load', function() {
+        if (typeof BMap !== 'undefined') {
+            initMap();
+        } else {
+            let retryCount = 0;
+            const interval = setInterval(() => {
+                if (typeof BMap !== 'undefined') {
+                    clearInterval(interval);
+                    initMap();
+                } else if (retryCount > 40) {
+                    clearInterval(interval);
+                    alert('百度地图API加载失败，请检查网络或刷新重试。');
+                }
+                retryCount++;
+            }, 200);
+        }
+        setTimeout(initNavigation, 400);
+    });
+</script>
+</body>
+</html>

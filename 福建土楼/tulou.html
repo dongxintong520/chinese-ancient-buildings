@@ -3,232 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>福建土楼 · 3D数字复原 | 世界文化遗产 客家建筑奇迹</title>
+    <title>福建土楼 · 3D数字复原 | 云霭缭绕 客家奇迹</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            margin: 0;
-            overflow: hidden;
-            font-family: 'Microsoft YaHei', serif;
-            background: #050a10;
-            background: radial-gradient(circle at 50% 50%, #102030 0%, #050a10 100%);
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; overflow: hidden; font-family: 'Microsoft YaHei', serif; }
         #info {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            z-index: 200;
-            color: white;
-            background: rgba(0,0,0,0.7);
-            padding: 10px 20px;
-            border-radius: 30px;
-            backdrop-filter: blur(8px);
-            font-size: 14px;
+            position: absolute; top: 20px; left: 20px; z-index: 200;
+            color: white; background: rgba(0,0,0,0.6); padding: 10px 20px;
+            border-radius: 30px; backdrop-filter: blur(8px); font-size: 14px;
             pointer-events: none;
         }
         .back-btn {
-            position: absolute;
-            bottom: 30px;
-            left: 30px;
-            z-index: 200;
-            background: linear-gradient(135deg, #8B4513, #6a3510);
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 40px;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: all 0.3s;
+            position: absolute; bottom: 30px; left: 30px; z-index: 200;
+            background: linear-gradient(135deg, #8B4513, #6a3510); color: white;
+            border: none; padding: 12px 28px; border-radius: 40px;
+            font-size: 16px; cursor: pointer; font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: all 0.3s;
         }
-        .back-btn:hover {
-            transform: scale(1.03);
-            background: #9b5520;
-        }
+        .back-btn:hover { transform: scale(1.03); background: #9b5520; }
         .controls-hint {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            z-index: 200;
-            color: rgba(255,255,255,0.8);
-            background: rgba(0,0,0,0.5);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
+            position: absolute; bottom: 30px; right: 30px; z-index: 200;
+            color: rgba(255,255,255,0.8); background: rgba(0,0,0,0.5);
+            padding: 8px 16px; border-radius: 20px; font-size: 12px;
             pointer-events: none;
         }
         .sidebar {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 290px;
-            background: rgba(20,30,25,0.95);
-            border-radius: 18px;
-            padding: 18px;
-            z-index: 150;
-            color: #e8f0e8;
-            max-height: 80vh;
-            overflow-y: auto;
-            border: 1px solid #666;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            border-left: 3px solid #ffdd99;
+            position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+            width: 290px; background: rgba(20,30,25,0.95); border-radius: 18px;
+            padding: 18px; z-index: 150; color: #e8f0e8; max-height: 80vh;
+            overflow-y: auto; border: 1px solid #6688aa; backdrop-filter: blur(12px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3); border-left: 3px solid #ffdd99;
+            transition: right 0.3s ease;
         }
-        .sidebar h3 {
-            color: #ffdd99;
-            text-align: center;
-            margin-top: 0;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #666;
-            font-size: 18px;
-            letter-spacing: 2px;
-        }
+        .sidebar h3 { color: #ffdd99; text-align: center; margin-top: 0;
+            padding-bottom: 10px; border-bottom: 1px solid #6688aa; font-size: 18px; }
         .sidebar-item {
-            background: rgba(60,80,70,0.6);
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            transition: 0.2s;
+            background: rgba(60,80,70,0.6); border-radius: 10px; padding: 12px;
+            margin-bottom: 8px; cursor: pointer; transition: 0.2s;
             border-left: 2px solid #ffdd99;
         }
-        .sidebar-item:hover {
-            background: #4a6a5a;
-            transform: translateX(-3px);
-        }
-        .sidebar-item.active {
-            background: #5a7a6a;
-            border-left-color: #8B4513;
-        }
-        .sidebar-item .title {
-            font-weight: bold;
-            color: #ffdd99;
-            margin-bottom: 4px;
-            font-size: 14px;
-        }
-        .sidebar-item .detail {
-            font-size: 11px;
-            color: #cccccc;
-            line-height: 1.4;
-        }
-        .sidebar-close {
-            text-align: right;
-            cursor: pointer;
-            font-size: 18px;
-            color: #ffdd99;
-            margin-bottom: 5px;
-        }
-        .sidebar-close:hover {
-            color: #ffaa66;
-        }
+        .sidebar-item:hover { background: #4a6a5a; transform: translateX(-3px); }
+        .sidebar-item.active { background: #5a7a6a; border-left-color: #8B4513; }
+        .sidebar-item .title { font-weight: bold; color: #ffdd99; margin-bottom: 4px; font-size: 14px; }
+        .sidebar-item .detail { font-size: 11px; color: #cccccc; line-height: 1.4; }
+        .sidebar-close { text-align: right; cursor: pointer; font-size: 18px; color: #ffdd99; margin-bottom: 5px; }
         .popup-card {
-            position: fixed;
-            background: rgba(20,30,25,0.98);
-            border-radius: 18px;
-            padding: 20px 24px;
-            max-width: 400px;
-            z-index: 1000;
-            color: #e8f0e8;
-            line-height: 1.7;
-            border-left: 4px solid #ffdd99;
-            left: 50px;
-            top: 100px;
-            backdrop-filter: blur(12px);
+            position: fixed; background: rgba(20,30,25,0.98); border-radius: 18px;
+            padding: 20px 24px; max-width: 400px; z-index: 1000; color: #e8f0e8;
+            line-height: 1.7; border-left: 4px solid #ffdd99; backdrop-filter: blur(12px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-            animation: fadeInUp 0.2s ease-out;
         }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .close-btn {
-            position: absolute;
-            top: 12px;
-            right: 16px;
-            background: none;
-            border: none;
-            color: #ffdd99;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        .close-btn:hover {
-            color: #ffaa66;
-        }
+        .close-btn { position: absolute; top: 12px; right: 16px; background: none;
+            border: none; color: #ffdd99; font-size: 18px; cursor: pointer; }
         .loading-panel {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%,-50%);
-            background: rgba(0,0,0,0.85);
-            color: #ffdd99;
-            padding: 20px 40px;
-            border-radius: 60px;
-            font-size: 16px;
-            z-index: 300;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            border: 1px solid #ffdd99;
-            pointer-events: none;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+            background: rgba(0,0,0,0.85); color: #ffdd99; padding: 20px 40px;
+            border-radius: 60px; font-size: 16px; z-index: 300; text-align: center;
+            backdrop-filter: blur(10px); border: 1px solid #ffdd99;
         }
-        .spinner {
-            width: 36px;
-            height: 36px;
-            border: 3px solid rgba(255,221,153,0.3);
-            border-top: 3px solid #ffdd99;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .error-msg {
-            position: absolute;
-            bottom: 120px;
-            left: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.85);
-            color: #ff6666;
-            padding: 15px;
-            border-radius: 16px;
-            text-align: center;
-            z-index: 300;
-            display: none;
-        }
-        .popup-table {
-            width: 100%;
-            font-size: 12px;
-            border-collapse: collapse;
-            margin: 8px 0;
-        }
-        .popup-table td {
-            padding: 4px 6px;
-            border: 1px solid rgba(255,221,153,0.3);
-        }
-        .popup-table th {
-            padding: 4px 6px;
-            border: 1px solid rgba(255,221,153,0.5);
-            background: rgba(60,80,70,0.6);
-            color: #ffdd99;
-        }
-        @media (max-width: 768px) {
-            .sidebar { width: 260px; right: 10px; padding: 12px; max-height: 70vh; }
-            .sidebar-item { padding: 10px 12px; }
-            .popup-card { max-width: 280px; padding: 12px 18px; left: 20px; top: 80px; }
-        }
+        .spinner { width: 36px; height: 36px; border: 3px solid rgba(255,221,153,0.3);
+            border-top: 3px solid #ffdd99; border-radius: 50%; animation: spin 1s linear infinite;
+            margin: 0 auto 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .error-msg { position: absolute; bottom: 120px; left: 20px; right: 20px;
+            background: rgba(0,0,0,0.85); color: #ff6666; padding: 15px; border-radius: 16px;
+            text-align: center; z-index: 300; display: none; }
     </style>
 </head>
 <body>
-<div id="info">🏯 福建土楼 · 3D数字复原 | 世界文化遗产 客家建筑奇迹</div>
+<div id="info">🏯 福建土楼 · 3D数字复原 | 云霭缭绕 客家奇迹</div>
 <button class="back-btn" onclick="goBack()">← 返回地图首页</button>
-<div class="controls-hint">🖱️ 鼠标拖拽旋转视角 | 右键平移 | 滚轮缩放</div>
+<div class="controls-hint">🖱️ 鼠标拖拽旋转 | 右键平移 | 滚轮缩放 | 动态云层粒子</div>
 <div class="sidebar" id="sidebar">
     <div class="sidebar-close" id="sidebarClose">✕</div>
     <h3>🏯 土楼建筑资料说明</h3>
@@ -245,351 +90,236 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.min.js"></script>
 
 <script>
-// ✅ 完全匹配你的模型文件名
 const MODEL_FILE = 'model.gltf';
 
-// 1. 场景初始化
+// 场景初始化
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0a1018);
-scene.fog = new THREE.FogExp2(0x0a1018, 0.006);
+scene.background = new THREE.Color(0x3a8cba);
+scene.fog = new THREE.FogExp2(0x3a8cba, 0.002);
 
-// 2. 相机（适配你的模型，保证视野）
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 100000);
-camera.position.set(0, 100, 500);
+camera.position.set(0, 60, 350);
 camera.lookAt(0, 0, 0);
 
-// 3. 渲染器
-const renderer = new THREE.WebGLRenderer({ 
-    antialias: true,
-    alpha: false
-});
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
-renderer.setPixelRatio(window.devicePixelRatio);
 document.body.appendChild(renderer.domElement);
 
-// 4. 控制器
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 controls.rotateSpeed = 1.0;
 controls.zoomSpeed = 1.2;
-controls.target.set(0, 0, 0);
+controls.target.set(0, 20, 0);
 
-// 5. 灯光（拉满亮度，保证模型不黑）
-const ambientLight = new THREE.AmbientLight(0xffffff, 3.0);
+// ========== 云层粒子系统 ==========
+const cloudGroup = new THREE.Group();
+
+// 白色云粒子（半透明，漂浮）
+const cloudMat = new THREE.PointsMaterial({ color: 0xd8eaff, size: 0.9, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending });
+const cloudPositions = [];
+for (let i = 0; i < 2000; i++) {
+    const radius = 45 + Math.random() * 100;
+    const angle = Math.random() * Math.PI * 2;
+    const x = Math.cos(angle) * radius;
+    const z = Math.sin(angle) * radius;
+    const y = 15 + Math.random() * 45;
+    cloudPositions.push(x, y, z);
+}
+const cloudGeo = new THREE.BufferGeometry();
+cloudGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(cloudPositions), 3));
+const cloudPoints = new THREE.Points(cloudGeo, cloudMat);
+cloudGroup.add(cloudPoints);
+
+// 暖色光晕粒子（环绕土楼）
+const glowMat = new THREE.PointsMaterial({ color: 0xffcc88, size: 0.5, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending });
+const glowPositions = [];
+for (let i = 0; i < 1200; i++) {
+    const radius = 28 + Math.random() * 60;
+    const angle = Math.random() * Math.PI * 2;
+    const x = Math.cos(angle) * radius;
+    const z = Math.sin(angle) * radius;
+    const y = 5 + Math.random() * 35;
+    glowPositions.push(x, y, z);
+}
+const glowGeo = new THREE.BufferGeometry();
+glowGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(glowPositions), 3));
+const glowPoints = new THREE.Points(glowGeo, glowMat);
+cloudGroup.add(glowPoints);
+
+// 高空薄云
+const highMat = new THREE.PointsMaterial({ color: 0xfff5e6, size: 1.1, transparent: true, opacity: 0.3, blending: THREE.AdditiveBlending });
+const highPositions = [];
+for (let i = 0; i < 800; i++) {
+    const radius = 60 + Math.random() * 120;
+    const angle = Math.random() * Math.PI * 2;
+    const x = Math.cos(angle) * radius;
+    const z = Math.sin(angle) * radius;
+    const y = 45 + Math.random() * 45;
+    highPositions.push(x, y, z);
+}
+const highGeo = new THREE.BufferGeometry();
+highGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(highPositions), 3));
+const highPoints = new THREE.Points(highGeo, highMat);
+cloudGroup.add(highPoints);
+
+scene.add(cloudGroup);
+const cloudSystems = [cloudPoints, glowPoints, highPoints];
+
+// ========== 灯光系统 ==========
+const ambientLight = new THREE.AmbientLight(0xffffff, 1.8);
 scene.add(ambientLight);
-const dirLight = new THREE.DirectionalLight(0xffffff, 5.0);
-dirLight.position.set(15, 25, 15);
+
+const dirLight = new THREE.DirectionalLight(0xfff5e0, 2.5);
+dirLight.position.set(15, 35, 20);
 dirLight.castShadow = true;
-dirLight.shadow.mapSize.width = 2048;
-dirLight.shadow.mapSize.height = 2048;
 scene.add(dirLight);
 
-// 6. 地面 + 网格（永久可见）
-const ground = new THREE.Mesh(
-    new THREE.PlaneGeometry(200, 200),
-    new THREE.MeshStandardMaterial({ 
-        color: 0x2a3a4a, 
-        roughness: 0.9, 
-        metalness: 0.1,
-        transparent: true,
-        opacity: 0.2
-    })
-);
-ground.rotation.x = -Math.PI/2;
-ground.position.y = -0.5;
-ground.receiveShadow = true;
-ground.visible = true;
-scene.add(ground);
+const backLight = new THREE.DirectionalLight(0x88aaff, 1.2);
+backLight.position.set(-12, 20, -15);
+scene.add(backLight);
 
-const gridHelper = new THREE.GridHelper(200, 40, 0x6688aa, 0x446688);
-gridHelper.position.y = -0.51;
+const fillLight = new THREE.PointLight(0xffaa66, 0.9);
+fillLight.position.set(8, 12, 6);
+scene.add(fillLight);
+
+const groundFill = new THREE.PointLight(0xccaa88, 0.8);
+groundFill.position.set(0, -2, 0);
+scene.add(groundFill);
+
+// ========== 地面 ==========
+const groundPlane = new THREE.Mesh(
+    new THREE.PlaneGeometry(240, 240),
+    new THREE.MeshStandardMaterial({ color: 0x5a8a5a, roughness: 0.85, transparent: true, opacity: 0.5 })
+);
+groundPlane.rotation.x = -Math.PI/2;
+groundPlane.position.y = -0.6;
+groundPlane.receiveShadow = true;
+scene.add(groundPlane);
+
+const gridHelper = new THREE.GridHelper(220, 40, 0xaaddcc, 0x88aa99);
+gridHelper.position.y = -0.55;
 gridHelper.material.transparent = true;
-gridHelper.material.opacity = 0.35;
-gridHelper.visible = true;
+gridHelper.material.opacity = 0.4;
 scene.add(gridHelper);
 
-// 7. 粒子背景
-const particleCount = 200;
-const particlesGeo = new THREE.BufferGeometry();
-const positions = new Float32Array(particleCount * 3);
-for (let i = 0; i < particleCount; i++) {
-    positions[i*3] = (Math.random() - 0.5) * 1000;
-    positions[i*3+1] = Math.random() * 200;
-    positions[i*3+2] = (Math.random() - 0.5) * 1000;
+// 草地粒子
+const grassMat = new THREE.PointsMaterial({ color: 0x7aaa5a, size: 0.15 });
+const grassPos = [];
+for (let i = 0; i < 2000; i++) {
+    grassPos.push((Math.random() - 0.5) * 180, -0.45, (Math.random() - 0.5) * 180);
 }
-particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-const particleMat = new THREE.PointsMaterial({ 
-    color: 0xffdd99, 
-    size: 0.5, 
-    transparent: true, 
-    opacity: 0.3 
-});
-const particlesSys = new THREE.Points(particlesGeo, particleMat);
-particlesSys.visible = true;
-scene.add(particlesSys);
+const grassGeo = new THREE.BufferGeometry();
+grassGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(grassPos), 3));
+scene.add(new THREE.Points(grassGeo, grassMat));
 
-// 8. 资料数据（完全保留）
+// 星空背景
+const starMat = new THREE.PointsMaterial({ color: 0xffeedd, size: 0.2, transparent: true, opacity: 0.4 });
+const starPos = [];
+for (let i = 0; i < 600; i++) {
+    starPos.push((Math.random() - 0.5) * 500, Math.random() * 100 + 20, (Math.random() - 0.5) * 400 - 100);
+}
+const starGeo = new THREE.BufferGeometry();
+starGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPos), 3));
+const stars = new THREE.Points(starGeo, starMat);
+scene.add(stars);
+
+// ========== 侧边栏数据 ==========
 const buildingParts = [
-    {
-        name: "🏯 福建土楼·整体概况",
-        detail: "世界文化遗产｜客家建筑奇迹｜聚族而居典范",
-        content: `福建土楼是中国闽西南客家标志性民居建筑，世界独一无二的大型夯土民居建筑群，2008年列入《世界文化遗产名录》。
-        <br><br>
-        诞生于宋元时期，明清达到建造鼎盛，是客家先民为适应聚族而居、防御匪患、抵御自然灾害创造的建筑奇迹，融合传统夯土技术、木结构营造智慧与客家宗族文化，是中国古建筑民居类的巅峰代表之一。`
-    },
-    {
-        name: "📅 始建与关键朝代节点",
-        detail: "近千年营造史｜明清格局定型",
-        content: `福建土楼发展跨越近千年，核心历史节点：
-        <br><br>
-        <table class="popup-table">
-            <tr><th>朝代/时期</th><th>时间</th><th>核心事件</th></tr>
-            <tr><td>宋元（萌芽期）</td><td>11-13世纪</td><td>客家先民南迁，建造小型夯土防御民居，土楼雏形诞生</td></tr>
-            <tr><td>明（发展期）</td><td>14-17世纪</td><td>形制成熟，圆/方形土楼规模化建造，防御体系完善</td></tr>
-            <tr><td>清（鼎盛期）</td><td>17-19世纪</td><td>建造达顶峰，大型经典土楼集中建成，工艺用材达巅峰</td></tr>
-            <tr><td>近现代</td><td>2008年</td><td>列入《世界文化遗产名录》，成为世界级文化瑰宝</td></tr>
-        </table>`
-    },
-    {
-        name: "🏛️ 建筑形制与核心参数",
-        detail: "圆形/方形/五凤形｜400间房｜可容800人",
-        content: `福建土楼核心形制与参数（以承启楼为例）：
-        <br><br>
-        <table class="popup-table">
-            <tr><th>项目</th><th>权威数据</th><th>备注</th></tr>
-            <tr><td>楼高</td><td>14.4米</td><td>四层结构，三檐歇山顶</td></tr>
-            <tr><td>直径</td><td>73米</td><td>圆形平面，大型圆楼典型形制</td></tr>
-            <tr><td>占地面积</td><td>5376㎡</td><td>含环形楼体、内院、祖堂等完整院落</td></tr>
-            <tr><td>墙体厚度</td><td>底部2.5米/顶部1.5米</td><td>夯土墙承重，向上逐层收分</td></tr>
-            <tr><td>房间数量</td><td>400间</td><td>可容纳800人聚族而居</td></tr>
-        </table>`
-    },
-    {
-        name: "⏳ 营建耗时与用工数据",
-        detail: "跨81年建造｜12万工日｜三代接力",
-        content:`<strong>承启楼</strong> 营造历时81年（1628-1709年），跨越明、清两代，江氏家族三代接力建造：
-        <br><br>
-        <table class="popup-table">
-            <tr><th>建造阶段</th><th>耗时</th><th>核心工程</th></tr>
-            <tr><td>第一阶段</td><td>14年(1628-1642)</td><td>外环主体营造</td></tr>
-            <tr><td>第二阶段</td><td>58年(1642-1700)</td><td>内圈建筑续建</td></tr>
-            <tr><td>第三阶段</td><td>9年(1700-1709)</td><td>收尾修缮与定型</td></tr>
-        </table>`
-    },
-    {
-        name: "🌳 建筑材料（木/石/夯土）",
-        detail: "1.2万m³夯土｜1500m³木材｜传统工艺",
-        content: `福建土楼核心建造用材：
-        <br><br>
-        <strong>1. 夯土（核心结构）</strong><br>
-        • 原料：红壤土 + 糯米 + 红糖 + 石灰 + 竹筋<br>
-        • 用量：约1.2万m³，混合后分层夯筑，强度堪比砖石<br>
-        • 工艺：墙基深埋2米，底部厚2.5米，向上收分至1.5米
-        <br><br>
-        <strong>2. 木材（梁架结构）</strong><br>
-        • 用材：闽西优质杉木<br>
-        • 用量：约1500m³，用于梁架、楼板、门窗、楼梯
-        <br><br>
-        <strong>3. 石材（基础与装饰）</strong><br>
-        • 岩质：花岗岩<br>
-        • 用量：约3000m³，用于楼基、墙脚、台阶、门框`
-    },
-    {
-        name: "🏆 文化与建筑价值",
-        detail: "客家文化活化石｜防御与居住合一",
-        content: `福建土楼是客家文化的物质载体，核心价值：
-        <br><br>
-        1. 居住价值：400间房可容纳800人，满足聚族而居的生活需求<br>
-        2. 防御价值：厚达2.5米的夯土墙、封闭的环形结构，抵御匪患与自然灾害<br>
-        3. 文化价值：体现客家先民的营造智慧与宗族文化，是世界建筑史上的瑰宝<br>
-        4. 艺术价值：圆形布局、夯土工艺、木构装饰，融合实用与美学`
-    }
+    { name: "🏯 福建土楼·整体概况", detail: "世界文化遗产｜客家建筑奇迹", content: "福建土楼是中国闽西南客家标志性民居建筑，世界独一无二的大型夯土民居建筑群，2008年列入《世界文化遗产名录》。" },
+    { name: "📅 始建与关键朝代节点", detail: "近千年营造史｜明清格局定型", content: "宋元（萌芽期）：客家先民南迁，建造小型夯土防御民居。<br>明（发展期）：形制成熟，圆/方形土楼规模化建造。<br>清（鼎盛期）：建造达顶峰。" },
+    { name: "🏛️ 建筑形制与核心参数", detail: "圆形/方形｜400间房｜可容800人", content: "楼高14.4米，直径73米，占地面积5376㎡，墙体底部厚2.5米，房间400间，可容纳800人聚族而居。" },
+    { name: "⏳ 营建耗时与用工数据", detail: "跨81年建造｜12万工日", content: "承启楼营造历时81年（1628-1709年），跨越明、清两代，江氏家族三代接力建造。" },
+    { name: "🌳 建筑材料", detail: "夯土｜木材｜石材", content: "夯土：红壤土+糯米+红糖+石灰+竹筋，约1.2万m³。<br>木材：闽西优质杉木，约1500m³。<br>石材：花岗岩，约3000m³。" },
+    { name: "🏆 文化与建筑价值", detail: "客家文化活化石", content: "居住价值：400间房容纳800人。<br>防御价值：厚达2.5米夯土墙。<br>文化价值：客家营造智慧与宗族文化的物质载体。" }
 ];
 
-// 9. 侧边栏逻辑
-let activeItemIndex = -1;
 let currentCard = null;
-buildSidebar();
 function buildSidebar() {
     const list = document.getElementById('sidebarList');
     list.innerHTML = '';
     buildingParts.forEach((item, idx) => {
         const div = document.createElement('div');
-        div.className = `sidebar-item ${idx === activeItemIndex ? 'active' : ''}`;
-        div.innerHTML = `
-            <div class="title">${item.name}</div>
-            <div class="detail">${item.detail}</div>
-        `;
-        div.onclick = () => selectPart(idx);
+        div.className = 'sidebar-item';
+        div.innerHTML = `<div class="title">${item.name}</div><div class="detail">${item.detail}</div>`;
+        div.onclick = () => {
+            if (currentCard) currentCard.remove();
+            const card = document.createElement('div');
+            card.className = 'popup-card';
+            card.innerHTML = `<button class="close-btn" onclick="this.parentElement.remove(); currentCard=null;">✕</button>${item.content}`;
+            document.body.appendChild(card);
+            currentCard = card;
+            const rect = document.getElementById('sidebar').getBoundingClientRect();
+            card.style.left = (rect.left - 415) + 'px';
+            card.style.top = rect.top + 50 + 'px';
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            div.classList.add('active');
+        };
         list.appendChild(div);
     });
 }
-function selectPart(index) {
-    if (currentCard) currentCard.remove();
-    document.querySelectorAll('.sidebar-item').forEach((item, i) => {
-        if (i === index) item.classList.add('active');
-        else item.classList.remove('active');
-    });
-    activeItemIndex = index;
-    showCard(buildingParts[index]);
-}
-function showCard(item) {
-    const card = document.createElement('div');
-    card.className = 'popup-card';
-    card.innerHTML = `<button class="close-btn" onclick="this.parentElement.remove(); resetActiveItem()">✕</button>${item.content}`;
-    document.body.appendChild(card);
-    currentCard = card;
-    const sidebar = document.getElementById('sidebar');
-    const rect = sidebar.getBoundingClientRect();
-    const w = 400;
-    let left = rect.left - w - 15;
-    if (left < 10) left = rect.right + 15;
-    card.style.left = left + 'px';
-    card.style.top = rect.top + 50 + 'px';
-}
-function resetActiveItem() {
-    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-    activeItemIndex = -1;
-    currentCard = null;
-}
+buildSidebar();
 
-// 10. 侧边栏开关
 let sidebarVisible = true;
-const sidebar = document.getElementById('sidebar');
-const sidebarClose = document.getElementById('sidebarClose');
-sidebarClose.onclick = () => {
-    if (sidebarVisible) {
-        sidebar.style.right = '-320px';
-        sidebarVisible = false;
-        sidebarClose.innerHTML = '☰';
-        sidebarClose.style.cssText = 'position:fixed;right:10px;top:50%;background:rgba(20,30,25,0.9);padding:8px 12px;border-radius:30px;font-size:20px;z-index:160';
-    } else {
-        sidebar.style.right = '20px';
-        sidebarVisible = true;
-        sidebarClose.innerHTML = '✕';
-        sidebarClose.style.cssText = '';
-    }
+const sidebarEl = document.getElementById('sidebar');
+const sidebarCloseBtn = document.getElementById('sidebarClose');
+sidebarCloseBtn.onclick = () => {
+    if (sidebarVisible) { sidebarEl.style.right = '-320px'; sidebarVisible = false; sidebarCloseBtn.innerHTML = '☰'; sidebarCloseBtn.style.cssText = 'position:fixed;right:10px;top:50%;background:rgba(20,30,25,0.9);padding:8px 12px;border-radius:30px;font-size:20px;z-index:160'; }
+    else { sidebarEl.style.right = '20px'; sidebarVisible = true; sidebarCloseBtn.innerHTML = '✕'; sidebarCloseBtn.style.cssText = ''; }
 };
 
-// ====================== 模型加载（最终修复：适配你的模型）======================
+// ========== 模型加载 ==========
 const loader = new THREE.GLTFLoader();
 let modelLoaded = false;
 const loadingPanel = document.getElementById('loadingPanel');
 const errorMsgDiv = document.getElementById('errorMsg');
 
-loader.load(
-    MODEL_FILE,
-    (gltf) => {
-        console.log('✅ 模型加载成功', gltf);
-        const m = gltf.scene;
+loader.load(MODEL_FILE, (gltf) => {
+    const m = gltf.scene;
+    const box = new THREE.Box3().setFromObject(m);
+    const center = box.getCenter(new THREE.Vector3());
+    const size = box.getSize(new THREE.Vector3());
+    m.position.set(-center.x, -center.y, -center.z);
+    const scale = 140 / Math.max(size.x, size.y, size.z);
+    m.scale.set(scale, scale, scale);
+    m.traverse(child => { if (child.isMesh) { child.castShadow = true; child.receiveShadow = true; if (child.material) child.material.side = THREE.DoubleSide; } });
+    scene.add(m);
+    modelLoaded = true;
+    loadingPanel.style.display = 'none';
+    const finalBox = new THREE.Box3().setFromObject(m);
+    const finalCenter = finalBox.getCenter(new THREE.Vector3());
+    const radius = Math.max(finalBox.getSize(new THREE.Vector3()).x, finalBox.getSize(new THREE.Vector3()).z) / 2;
+    camera.position.set(finalCenter.x + radius * 2.2, finalCenter.y + radius * 1.0, finalCenter.z + radius * 2.5);
+    controls.target.set(finalCenter.x, finalCenter.y, finalCenter.z);
+    controls.update();
+}, (xhr) => { loadingPanel.innerHTML = `<div class="spinner"></div>加载中 ${Math.floor(xhr.loaded/xhr.total*100)}%`; }, 
+(err) => { loadingPanel.style.display = 'none'; errorMsgDiv.style.display = 'block'; });
 
-        // 强制保留地面/网格/粒子
-        ground.visible = true;
-        gridHelper.visible = true;
-        particlesSys.visible = true;
+// ========== 云层飘移动画 ==========
+let animTime = 0;
+function animateClouds() {
+    animTime += 0.004;
+    cloudSystems.forEach(sys => { if (sys) { sys.rotation.y = animTime * 0.08; sys.rotation.x = Math.sin(animTime * 0.12) * 0.03; } });
+    if (stars) stars.rotation.y += 0.0003;
+}
 
-        // 1. 计算模型真实边界
-        const box = new THREE.Box3().setFromObject(m);
-        const center = box.getCenter(new THREE.Vector3());
-        const size = box.getSize(new THREE.Vector3());
-        console.log(`📏 模型原始尺寸：${size.x.toFixed(2)} x ${size.y.toFixed(2)} x ${size.z.toFixed(2)}`);
-
-        // 2. 强制居中（抵消坐标偏移）
-        m.position.set(-center.x, -center.y, -center.z);
-        
-        // 3. 自动缩放（适配屏幕，缩放到150单位大小，绝对可见）
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const scale = 150 / maxDim;
-        m.scale.set(scale, scale, scale);
-        console.log(`📏 模型缩放比例：${scale.toFixed(2)}`);
-
-        // 4. 修复材质（双面渲染+不透明+高亮）
-        m.traverse((child) => {
-            if (child.isMesh) {
-                child.castShadow = true;
-                child.receiveShadow = true;
-                if (child.material) {
-                    child.material.needsUpdate = true;
-                    child.material.transparent = false;
-                    child.material.opacity = 1;
-                    child.material.side = THREE.DoubleSide;
-                    // 强制材质亮度
-                    if (child.material.isMeshStandardMaterial) {
-                        child.material.emissive = new THREE.Color(0xffffff);
-                        child.material.emissiveIntensity = 0.3;
-                    }
-                }
-            }
-        });
-
-        scene.add(m);
-        modelLoaded = true;
-        loadingPanel.style.display = 'none';
-        errorMsgDiv.style.display = 'none';
-
-        // 5. 自动定位相机到模型正前方
-        const finalBox = new THREE.Box3().setFromObject(m);
-        const finalCenter = finalBox.getCenter(new THREE.Vector3());
-        const radius = Math.max(finalBox.getSize(new THREE.Vector3()).x, finalBox.getSize(new THREE.Vector3()).z) / 2;
-        camera.position.set(finalCenter.x + radius*2.5, finalCenter.y + radius*1.2, finalCenter.z + radius*2.5);
-        camera.lookAt(finalCenter);
-        controls.target.set(finalCenter.x, finalCenter.y, finalCenter.z);
-    },
-    (xhr) => {
-        const p = Math.floor(xhr.loaded / xhr.total * 100);
-        loadingPanel.innerHTML = `<div class="spinner"></div>加载中 ${p}%`;
-    },
-    (err) => {
-        console.error('❌ 模型加载失败', err);
-        loadingPanel.style.display = 'none';
-        errorMsgDiv.style.display = 'block';
-        // 加载失败也保留网格
-        ground.visible = true;
-        gridHelper.visible = true;
-    }
-);
-
-// 11. 渲染循环（强制显示网格）
 function animate() {
     requestAnimationFrame(animate);
-    // 每帧强制显示地面/网格/粒子
-    ground.visible = true;
-    gridHelper.visible = true;
-    particlesSys.visible = true;
+    animateClouds();
     controls.update();
     renderer.render(scene, camera);
 }
 animate();
 
-// 12. 窗口适配
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    if (currentCard) {
-        const rect = sidebar.getBoundingClientRect();
-        const w = 400;
-        let left = rect.left - w - 15;
-        if (left < 10) left = rect.right + 15;
-        currentCard.style.left = left + 'px';
-        currentCard.style.top = rect.top + 50 + 'px';
-    }
 });
 
-// 13. 返回
-window.goBack = () => {
-    window.location.href = '../index.html';
-};
-
-// 14. 超时保护
-setTimeout(() => {
-    if (!modelLoaded) {
-        loadingPanel.style.display = 'none';
-        errorMsgDiv.style.display = 'block';
-    }
-}, 15000);
+window.goBack = () => { window.location.href = '../index.html'; };
+setTimeout(() => { if (!modelLoaded) { loadingPanel.style.display = 'none'; errorMsgDiv.style.display = 'block'; } }, 15000);
 </script>
 </body>
 </html>
